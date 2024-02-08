@@ -43,9 +43,9 @@ public class RestSettingController {
     @ResponseBody
     @PostMapping(value = "/chatGPTUsing")
     public Response<?> chatGPTUsing(HttpServletRequest req, @RequestBody ChatGPTSettingReqVo chatGPTSettingReqVo) {
-//        if(!chatGPTService.checkChatGPTStatus()) {
-//            return Response.error(ResponseCode.AI_ERROR, req);
-//        }
+        if(!chatGPTService.checkChatGPTStatus()) {
+            return Response.error(ResponseCode.AI_ERROR, req);
+        }
         GlobalSettingCache.usingAiCharacterName = chatGPTSettingReqVo.getAiCharacterName();
         settingService.loadCacheChatGPTSettingByVo(chatGPTSettingReqVo);
         settingService.writeAndReadSetting();

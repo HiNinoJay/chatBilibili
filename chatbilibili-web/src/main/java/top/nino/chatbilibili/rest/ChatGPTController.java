@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import top.nino.api.model.enums.ResponseCode;
 import top.nino.api.model.vo.Response;
 import top.nino.api.model.vo.dto.ChatResDto;
 import top.nino.service.chatgpt.ChatGPTService;
@@ -24,7 +25,12 @@ public class ChatGPTController {
     @ResponseBody
     @GetMapping(value = "/test")
     public Response<?> test(HttpServletRequest req) {
-        ChatResDto chatResDto = chatGPTService.chatCompletions("你好！");
+        ChatResDto chatResDto = null;
+        try {
+            chatResDto = chatGPTService.chatCompletions("你好！");
+        } catch (Exception e) {
+            return Response.error(ResponseCode.AI_ERROR, req);
+        }
         return Response.success(chatResDto, req);
     }
 

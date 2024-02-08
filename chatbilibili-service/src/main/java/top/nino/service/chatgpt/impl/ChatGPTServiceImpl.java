@@ -7,6 +7,7 @@ import cn.codingguide.chatgpt4j.domain.chat.ChatCompletionResponse;
 import cn.codingguide.chatgpt4j.domain.chat.Message;
 import cn.codingguide.chatgpt4j.key.RandomKeySelectorStrategy;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,32 +20,53 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * @author : zengzhongjie
+ * @author : nino
  * @date : 2024/2/3 01:27
  */
+@Slf4j
 @Service
 public class ChatGPTServiceImpl implements ChatGPTService {
+
+
     private DefaultChatGptClient client;
 
-    private String apiKey = "";
+    @Value("${chatgpt.conf.CHAT_GPT_3_5.key}")
+    private String apiKey;
+
+    @Value("${chatgpt.conf.CHAT_GPT_3_5.proxyIP}")
+    private String proxyIP;
+
+    @Value("${chatgpt.conf.CHAT_GPT_3_5.proxyPort}")
+    private Integer proxyPort;
+
+    @Value("${chatgpt.conf.CHAT_GPT_3_5.apiHost}")
+    private String apiHost;
 
     @PostConstruct
     private void init() {
         client = DefaultChatGptClient.newBuilder()
                 // 这里替换成自己的key，该参数是必填项
-                .apiKeys(Arrays.asList(apiKey))
+                .apiKeys(Lists.newArrayList(apiKey))
                 // 设置apiHost，如果没有自己的api地址，可以不用设置，默认是：https://api.openai.com/
-                .apiHost("https://api.openai.com/")
+                .apiHost(apiHost)
                 // 设置proxy代理，方便大陆通过代理访问OpenAI，支持Http代理或者Socks代理，两者只需要设置其一即可，两者都设置，后者将覆盖前者
-                .proxyHttp("127.0.0.1", 8080)
-                .proxySocks("127.0.0.1", 49711)
+                .proxyHttp(proxyIP, proxyPort)
+                .proxySocks(proxyIP, proxyPort)
                 // 支持自定义OkHttpClient，该参数非必填，没有填写将使用默认的OkHttpClient
                 .okHttpClient(null)
                 // 设置apiKey选择策略，该参数是非必填项，如果没有填写，将使用默认的随机选择器（RandomKeySelectorStrategy），用户可以通过实现KeySelectorStrategy接口提供自定义选择器
                 .keySelectorStrategy(new RandomKeySelectorStrategy())
                 // 设置开启日志，非必填项，默认没有打印请求日志，测试期间可以设置BODY日志，日志量较大，生产环境不建议开启
-                .logLevel(HttpLoggingInterceptor.Level.BODY)
+                .logLevel(HttpLoggingInterceptor.Level.NONE)
                 .build();
+
+        try {
+            chatCompletions("你好");
+        } catch (Exception e) {
+            log.error("chatGPT服务器连接异常", e);
+            return;
+        }
+        log.info("已经连接到chatGPT。");
     }
 
 
@@ -55,7 +77,7 @@ public class ChatGPTServiceImpl implements ChatGPTService {
     }
 
     @Override
-    public ChatResDto chatCompletions(String msg) {
+    public ChatResDto chatCompletions(String msg) throws Exception{
 
         ChatResDto chatResVo = new ChatResDto();
 
@@ -63,7 +85,6 @@ public class ChatGPTServiceImpl implements ChatGPTService {
                 .addMessage(Message.newBuilder().role(Role.SYSTEM).content("假设你是一只猫！用猫的语气回答我的问题！").build())
                 .addMessage(Message.newBuilder().role(Role.USER).content(msg).build())
                 .build();
-
 
         ChatCompletionResponse chatCompletion = client.chatCompletions(question);
 

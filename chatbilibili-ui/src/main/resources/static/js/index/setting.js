@@ -127,9 +127,11 @@ $(document).on('click', '.chatGPTSettingUsingButton', function (e) {
         contentType: 'application/json',
         data: JSON.stringify({ aiCharacterName : aiCharacterName, aiReplyStatus: aiReplyStatus, aiReplyNum: aiReplyNum }),
         success: function(response) {
-            // 请求成功后的处理
-            console.log('成功发送了数据到后端！');
-            console.log(response); // 假设后端返回的响应
+            if(response.code == "200") {
+                alert("应用成功。")
+            } else {
+                alert("应用失败。")
+            }
         },
         error: function(xhr, status, error) {
             // 请求失败后的处理

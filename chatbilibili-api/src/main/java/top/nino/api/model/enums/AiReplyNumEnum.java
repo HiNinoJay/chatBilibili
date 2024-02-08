@@ -2,11 +2,13 @@ package top.nino.api.model.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author : nino
  * @date : 2024/2/9 04:32
  */
+@Slf4j
 @Getter
 @AllArgsConstructor
 public enum AiReplyNumEnum {
@@ -19,13 +21,14 @@ public enum AiReplyNumEnum {
     private final Integer code;
     private final String msg;
 
-    public static LiveStatusEnum getByMsg(String msg) {
-        LiveStatusEnum[] values = LiveStatusEnum.values();
-        for(LiveStatusEnum value : values) {
+    public static AiReplyNumEnum getByMsg(String msg) {
+        AiReplyNumEnum[] values = AiReplyNumEnum.values();
+        for(AiReplyNumEnum value : values) {
             if(value.getMsg().equals(msg)) {
                 return value;
             }
         }
-        return null;
+        log.info("没有对应的回复频率：{}", msg);
+        return AiReplyNumEnum.ZERO;
     }
 }

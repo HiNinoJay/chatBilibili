@@ -25,9 +25,9 @@ chatgpt:
   main: CHAT_GPT_3_5
   conf:
     CHAT_GPT_3_5:
-      keys:
-        - # 这里输入你的key
-      proxy: true # 表示走上面的代理进行访问
+      key:
+      proxyIP: 127.0.0.1 # 表示走上面的代理进行访问
+      proxyPort: 49274
       apiHost: https://api.openai.com/
       timeOut: 900
       maxToken: 3000
