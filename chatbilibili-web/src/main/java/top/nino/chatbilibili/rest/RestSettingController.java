@@ -4,9 +4,14 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import top.nino.api.model.enums.ResponseCode;
+import top.nino.api.model.vo.AiCharacter;
+import top.nino.api.model.vo.setting.ChatGPTSettingReqVo;
 import top.nino.api.model.vo.setting.DanmuSettingStatusReqVo;
 import top.nino.api.model.vo.Response;
+import top.nino.chatbilibili.GlobalSettingCache;
 import top.nino.chatbilibili.service.SettingService;
+import top.nino.service.chatgpt.ChatGPTService;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,6 +28,9 @@ public class RestSettingController {
     @Autowired
     private SettingService settingService;
 
+    @Autowired
+    private ChatGPTService chatGPTService;
+
 
     @ResponseBody
     @PostMapping(value = "/danmuUsing")
@@ -34,8 +42,23 @@ public class RestSettingController {
 
     @ResponseBody
     @PostMapping(value = "/chatGPTUsing")
-    public Response<?> chatGPTUsing(HttpServletRequest req, @RequestBody DanmuSettingStatusReqVo danmuSettingStatusReqVo) {
-        settingService.loadCacheDanmuSettingByVo(danmuSettingStatusReqVo);
+    public Response<?> chatGPTUsing(HttpServletRequest req, @RequestBody ChatGPTSettingReqVo chatGPTSettingReqVo) {
+//        if(!chatGPTService.checkChatGPTStatus()) {
+//            return Response.error(ResponseCode.AI_ERROR, req);
+//        }
+        GlobalSettingCache.usingAiCharacterName = chatGPTSettingReqVo.getAiCharacterName();
+        settingService.loadCacheChatGPTSettingByVo(chatGPTSettingReqVo);
+        settingService.writeAndReadSetting();
+        return Response.success(true, req);
+    }
+
+    @ResponseBody
+    @PostMapping(value = "/addAiCharacter")
+    public Response<?> addAiCharacter(HttpServletRequest req, @RequestBody AiCharacter aiCharacter) {
+        if(!chatGPTService.checkChatGPTStatus()) {
+            return Response.error(ResponseCode.AI_ERROR, req);
+        }
+        GlobalSettingCache.ALL_SETTING_CONF.getAiCharacterList().add(aiCharacter);
         settingService.writeAndReadSetting();
         return Response.success(true, req);
     }

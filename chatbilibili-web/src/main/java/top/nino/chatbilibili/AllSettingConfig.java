@@ -9,10 +9,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
 
 import top.nino.api.model.tools.FastJsonUtils;
+import top.nino.api.model.vo.AiCharacter;
 import top.nino.core.data.BASE64Utils;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -102,6 +105,19 @@ public class AllSettingConfig implements Serializable {
 
 
     // ---------2.礼物设置---end------------
+
+    // ---------3.chatGPT设置---start-----------
+
+    @JSONField(name = "aiCharacterList")
+    private List<AiCharacter> aiCharacterList = new ArrayList<>();
+
+    @JSONField(name = "aiReplyStatus")
+    private Boolean aiReplyStatus = false;
+
+    @JSONField(name = "aiReplyNum")
+    private Integer aiReplyNum = 0;
+
+    // ---------3.chatGPT设置---end------------
 
 
     // 是否开启日志线程

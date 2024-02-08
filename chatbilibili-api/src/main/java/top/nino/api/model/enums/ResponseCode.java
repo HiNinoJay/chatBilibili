@@ -13,6 +13,8 @@ public enum ResponseCode {
 	SUCCESS("200", "成功", "成功"),
 	SYSTEM_ERROR("400", "System is busy!", "系统繁忙"),
 
+	AI_ERROR("50000", "AI连接状态异常", "AI连接状态异常"),
+
 	NONE_QRCODE_KEY_INFO("80000", "没有QrKey", "没有QrKey"),
 	QRCODE_UN_VALID_INFO("86038", "二维码失效", "二维码失效"),
 	QRCODE_NO_SCAN_INFO("86101", "未扫码", "未扫码"),

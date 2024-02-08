@@ -138,7 +138,7 @@
                 </div>
             </div>
         </div>
-        <button class = "ui fluid bottom attached button">一键应用以下所有配置</button>
+        <button class = "ui fluid bottom attached button oneStepAllSettingUsingButton">一键应用以下所有配置</button>
 
 
 
@@ -223,7 +223,7 @@
     <span>
         <span class="ui yellow color header">ChatGPT设置</span>
         <button class="circular ui icon button chatGPTSettingUsingButton">应用</button>
-        <button class="circular ui icon button">删除所有性格</button>
+        <button class="circular ui icon button deleteAllChatGptCharacterButton">删除所有性格</button>
     </span>
     <div class="ui segments">
 
@@ -232,21 +232,11 @@
             <div class="ui grid">
                 <div class="four wide column">
                     <div class="ui vertical fluid tabular menu chatGPTCharacterMenu">
-                        <a class="item">
-                            Bio
-                        </a>
-                        <a class="item">
-                            Pics
-                        </a>
-                        <a class="item">
-                            Companies
-                        </a>
-                        <a class="item">
-                            Links
-                        </a>
-                        <a class="item makeNewChatGPTCharacter">
-                            自定义
-                        </a>
+                        <a class="item">Bio</a>
+                        <a class="item">Pics</a>
+                        <a class="item">Companies</a>
+                        <a class="item">Links</a>
+                        <a class="item makeNewChatGPTCharacter">自定义</a>
                     </div>
                 </div>
                 <div class="twelve wide stretched column">
@@ -257,109 +247,37 @@
             </div>
         </div>
         <div class="ui  segment">
-            <h3>回答频率（每过多少句弹幕，调用AI回答一句）</h3>
-            <div class="ui form">
-                <div class="inline fields">
+            <h3>回答频率</h3>
+
+            <div class="ui form aiReplyForm">
+                <div class="inline fields dadioFilds">
                     <div class="ui slider checkbox">
-                        <input type="checkbox" name="newsletter" checked="checked">
-                        <label>普通弹幕</label>
-                    </div>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="frequency" checked="checked">
-                            <label>1句</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="frequency">
-                            <label>5句</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="frequency">
-                            <label>10句</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="frequency">
-                            <label>20句</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="frequency">
-                            <label>30句</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="frequency">
-                            <label>40句</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="frequency">
-                            <label>50句</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="ui form">
-                <div class="inline fields">
-                    <div class="ui slider checkbox">
-                        <input type="checkbox" name="newsletter" checked="checked">
-                        <label>舰长</label>
+                        <input type="checkbox" name="aiReplyStatus" checked="checked">
+                        <label>开关</label>
                     </div>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     &nbsp;&nbsp;&nbsp;
                     <div class="field">
                         <div class="ui radio checkbox">
-                            <input type="radio" name="frequency" checked="checked">
+                            <input type="radio" name="zero" checked="checked">
+                            <label>0句</label>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <div class="ui radio checkbox">
+                            <input type="radio" name="one">
                             <label>1句</label>
                         </div>
                     </div>
                     <div class="field">
                         <div class="ui radio checkbox">
-                            <input type="radio" name="frequency">
+                            <input type="radio" name="five">
                             <label>5句</label>
                         </div>
                     </div>
                     <div class="field">
                         <div class="ui radio checkbox">
-                            <input type="radio" name="frequency">
-                            <label>10句</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="ui form">
-                <div class="inline fields">
-                    <div class="ui slider checkbox">
-                        <input type="checkbox" name="newsletter" checked="checked">
-                        <label>老爷</label>
-                    </div>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    &nbsp;&nbsp;&nbsp;
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="frequency" checked="checked">
-                            <label>1句</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="frequency">
-                            <label>5句</label>
-                        </div>
-                    </div>
-                    <div class="field">
-                        <div class="ui radio checkbox">
-                            <input type="radio" name="frequency">
+                            <input type="radio" name="ten">
                             <label>10句</label>
                         </div>
                     </div>

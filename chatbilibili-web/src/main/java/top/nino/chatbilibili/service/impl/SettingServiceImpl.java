@@ -1,10 +1,13 @@
 package top.nino.chatbilibili.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import top.nino.api.model.enums.AiReplyNumEnum;
+import top.nino.api.model.vo.setting.ChatGPTSettingReqVo;
 import top.nino.api.model.vo.setting.DanmuSettingStatusReqVo;
 import top.nino.chatbilibili.GlobalSettingCache;
 import top.nino.chatbilibili.service.GlobalSettingFileService;
@@ -69,7 +72,7 @@ public class SettingServiceImpl implements SettingService {
         }
     }
 
-
+    @Override
     public void loadCacheDanmuSettingByVo(DanmuSettingStatusReqVo danmuSettingStatusReqVo) {
         synchronized (GlobalSettingCache.ALL_SETTING_CONF) {
             GlobalSettingCache.ALL_SETTING_CONF.setDanmuStatus(danmuSettingStatusReqVo.isDanmuStatus());
@@ -82,6 +85,15 @@ public class SettingServiceImpl implements SettingService {
             GlobalSettingCache.ALL_SETTING_CONF.setFreeGiftStatus(danmuSettingStatusReqVo.isNormalGiftStatus());
             GlobalSettingCache.ALL_SETTING_CONF.setScGiftStatus(danmuSettingStatusReqVo.isScGiftStatus());
 
+        }
+
+    }
+
+    @Override
+    public void loadCacheChatGPTSettingByVo(ChatGPTSettingReqVo chatGPTSettingReqVo) {
+        synchronized (GlobalSettingCache.ALL_SETTING_CONF) {
+            GlobalSettingCache.ALL_SETTING_CONF.setAiReplyStatus(chatGPTSettingReqVo.getAiReplyStatus());
+            GlobalSettingCache.ALL_SETTING_CONF.setAiReplyNum(AiReplyNumEnum.getByMsg(chatGPTSettingReqVo.getAiReplyNum()).getCode());
         }
 
     }

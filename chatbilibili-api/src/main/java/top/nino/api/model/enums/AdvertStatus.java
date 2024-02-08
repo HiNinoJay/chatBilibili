@@ -7,15 +7,9 @@ public enum AdvertStatus {
 	deafult(0),
 	//随机
 	random(1);
-	
-	
-	
-	
-	
-	
+
 	private int code;
 
-	
 	private AdvertStatus(int code) {
 		this.code = code;
 	}

@@ -47,6 +47,13 @@ public class ChatGPTServiceImpl implements ChatGPTService {
                 .build();
     }
 
+
+    @Override
+    public Boolean checkChatGPTStatus() {
+
+        return false;
+    }
+
     @Override
     public ChatResDto chatCompletions(String msg) {
 

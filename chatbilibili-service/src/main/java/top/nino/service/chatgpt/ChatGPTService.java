@@ -8,5 +8,7 @@ import top.nino.api.model.vo.dto.ChatResDto;
  * @date : 2024/2/3 01:27
  */
 public interface ChatGPTService {
+
+    Boolean checkChatGPTStatus();
     ChatResDto chatCompletions(String msg);
 }

@@ -1,6 +1,7 @@
 package top.nino.chatbilibili.service;
 
 
+import top.nino.api.model.vo.setting.ChatGPTSettingReqVo;
 import top.nino.api.model.vo.setting.DanmuSettingStatusReqVo;
 
 /**
@@ -11,4 +12,5 @@ public interface SettingService {
 
 	void loadCacheDanmuSettingByVo(DanmuSettingStatusReqVo danmuSettingStatusReqVo);
 
+	void loadCacheChatGPTSettingByVo(ChatGPTSettingReqVo chatGPTSettingReqVo);
 }
