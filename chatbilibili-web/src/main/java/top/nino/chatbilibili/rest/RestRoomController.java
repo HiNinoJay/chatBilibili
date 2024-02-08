@@ -4,7 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import top.nino.api.model.enums.LiveStatusEnum;
 import top.nino.api.model.vo.Response;
+import top.nino.api.model.vo.room.RoomInfoVo;
 import top.nino.chatbilibili.GlobalSettingCache;
 import top.nino.chatbilibili.service.ClientService;
 import top.nino.chatbilibili.service.SettingService;
@@ -39,9 +41,29 @@ public class RestRoomController {
                 GlobalSettingCache.ALL_SETTING_CONF.setRoomId(GlobalSettingCache.ROOM_ID);
                 GlobalSettingCache.ROOMID_LONG = GlobalSettingCache.ROOM_ID;
             }
-            settingService.writeAndReadSettingAndStartReceive();
+            settingService.writeAndReadSetting();
         }
 
-        return Response.success(ObjectUtils.isNotEmpty(GlobalSettingCache.bilibiliWebSocketProxy) && GlobalSettingCache.bilibiliWebSocketProxy.isOpen(), req);
+        if(ObjectUtils.isNotEmpty(GlobalSettingCache.bilibiliWebSocketProxy) && GlobalSettingCache.bilibiliWebSocketProxy.isOpen()) {
+            // 说明连接成功
+            RoomInfoVo roomInfoVo = new RoomInfoVo();
+            roomInfoVo.setLiveStatus(LiveStatusEnum.getByCode(GlobalSettingCache.LIVE_STATUS).getMsg());
+            roomInfoVo.setShortRoomId(GlobalSettingCache.SHORT_ROOM_ID);
+            roomInfoVo.setRoomId(GlobalSettingCache.ROOM_ID);
+            roomInfoVo.setAnchorUid(GlobalSettingCache.ANCHOR_UID);
+            roomInfoVo.setAnchorName(GlobalSettingCache.ANCHOR_NAME);
+            return Response.success(roomInfoVo, req);
+        }
+        return Response.error(req);
+    }
+
+
+    @ResponseBody
+    @GetMapping(value = "/closeConnection")
+    public Response<?> closeConnection(HttpServletRequest req) {
+        if(!ObjectUtils.isEmpty(GlobalSettingCache.bilibiliWebSocketProxy)) {
+            clientService.closeConnection();
+        }
+        return Response.success(true, req);
     }
 }

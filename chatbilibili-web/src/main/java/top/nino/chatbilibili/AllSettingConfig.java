@@ -27,7 +27,7 @@ public class AllSettingConfig implements Serializable {
 
     // ---------已经在使用--------------
 
-    // 房间号
+    // 上一次的房间号
     private Long roomId;
 
     // 是否开启弹幕

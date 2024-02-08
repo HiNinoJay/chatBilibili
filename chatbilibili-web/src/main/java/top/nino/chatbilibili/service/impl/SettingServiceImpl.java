@@ -41,7 +41,7 @@ public class SettingServiceImpl implements SettingService {
 
 
     @Override
-    public void writeAndReadSettingAndStartReceive() {
+    public void writeAndReadSetting() {
         synchronized (GlobalSettingCache.ALL_SETTING_CONF) {
 
             Map<String, String> localGlobalSettingMap = new HashMap<>();
@@ -51,7 +51,7 @@ public class SettingServiceImpl implements SettingService {
                 localGlobalSettingMap.put(GlobalSettingCache.FILE_COOKIE_PREFIX, BASE64Utils.encode(GlobalSettingCache.COOKIE_VALUE.getBytes()));
             }
 
-            // 页面上的所有配置
+            // 页面上的所有配置, 还把上一次连接到的直播间号保存了
             localGlobalSettingMap.put(GlobalSettingCache.FILE_SETTING_PREFIX, BASE64Utils.encode(GlobalSettingCache.ALL_SETTING_CONF.toJson().getBytes()));
 
             // 将当前的全局配置写到本地
@@ -65,19 +65,7 @@ public class SettingServiceImpl implements SettingService {
             } catch (Exception e) {
                 log.error("读取配置文件历史房间失败:" + e);
             }
-
-            if (ObjectUtils.isNotEmpty(GlobalSettingCache.ROOM_ID)) {
-                globalSettingFileService.startReceiveDanmuThread();
-            }
-            localGlobalSettingMap.clear();
         }
-    }
-
-    @Override
-    public void clearLoginCache() {
-        GlobalSettingCache.clearUserCache();
-        threadService.closeUser();
-        log.info("用户退出成功");
     }
 
 }

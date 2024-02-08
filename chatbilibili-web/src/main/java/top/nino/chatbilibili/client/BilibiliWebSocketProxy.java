@@ -24,5 +24,6 @@ public class BilibiliWebSocketProxy extends BilibiliWebsocket {
 	@Override
 	public void onClose(int code, String reason, boolean remote) {
 		super.onClose(code, reason, remote);
+		log.info("已关闭和B站弹幕服务器的连接。");
 	}
 }

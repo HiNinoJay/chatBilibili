@@ -1,7 +1,9 @@
 package top.nino.chatbilibili.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import top.nino.chatbilibili.GlobalSettingCache;
 import top.nino.chatbilibili.AllSettingConfig;
 import top.nino.chatbilibili.service.ThreadService;
@@ -11,28 +13,29 @@ import top.nino.chatbilibili.thread.*;
 /**
  * @author nino
  */
-@Component
+@Slf4j
+@Service
 public class ThreadServiceImpl implements ThreadService {
 
 	//关闭全部线程
 	public void closeAll(){
 		closeHeartByteThread();
-		closeUserOnlineThread();
 		closeLogThread();
-		closeSmallHeartThread();
 		closeParseMessageThread();
 	}
 
 
 	// 关闭用户相关线程
 	@Override
-	public void closeUser(){
-
-		closeUserOnlineThread();
+	public void closeByUserLogOut(){
+		// 关闭日志线程
 		closeLogThread();
-		closeSmallHeartThread();
+		// 关闭心跳检测线程
 		closeHeartByteThread();
+		// 关闭解析弹幕线程
 		closeParseMessageThread();
+		GlobalSettingCache.bilibiliWebSocketProxy.close();
+		log.info("关闭 websocket 及其 相关线程成功");
 	}
 
 	/**
@@ -73,7 +76,7 @@ public class ThreadServiceImpl implements ThreadService {
 			return;
 		}
 		GlobalSettingCache.logThread = new LogThread();
-		GlobalSettingCache.logThread.FLAG = false;
+		GlobalSettingCache.logThread.closeFlag = false;
 		GlobalSettingCache.logThread.start();
 		if (GlobalSettingCache.logThread != null && !GlobalSettingCache.logThread.getState().toString().equals("TERMINATED")) {
 		}
@@ -148,21 +151,6 @@ public class ThreadServiceImpl implements ThreadService {
 
 	@Override
 	public void closeUserOnlineThread() {
-		if (GlobalSettingCache.userOnlineHeartThread != null) {
-			GlobalSettingCache.userOnlineHeartThread.FLAG = true;
-			GlobalSettingCache.userOnlineHeartThread.interrupt();
-			GlobalSettingCache.userOnlineHeartThread = null;
-		}
-		if (GlobalSettingCache.heartBeatThread != null) {
-			GlobalSettingCache.heartBeatThread.FLAG = true;
-			GlobalSettingCache.heartBeatThread.interrupt();
-			GlobalSettingCache.heartBeatThread = null;
-		}
-		if (GlobalSettingCache.heartBeatsThread != null) {
-			GlobalSettingCache.heartBeatsThread.FLAG = true;
-			GlobalSettingCache.heartBeatsThread.interrupt();
-			GlobalSettingCache.heartBeatsThread = null;
-		}
 	}
 
 	@Override
@@ -193,7 +181,7 @@ public class ThreadServiceImpl implements ThreadService {
 	@Override
 	public void closeLogThread() {
 		if (GlobalSettingCache.logThread != null) {
-			GlobalSettingCache.logThread.FLAG = true;
+			GlobalSettingCache.logThread.closeFlag = true;
 			GlobalSettingCache.logThread.interrupt();
 			GlobalSettingCache.logThread = null;
 		}
@@ -201,11 +189,7 @@ public class ThreadServiceImpl implements ThreadService {
 
 	@Override
 	public void closeSmallHeartThread() {
-		if(GlobalSettingCache.smallHeartThread!=null) {
-			GlobalSettingCache.smallHeartThread.FLAG=true;
-			GlobalSettingCache.smallHeartThread.interrupt();
-			GlobalSettingCache.smallHeartThread=null;
-		}
+
 	}
 
 }

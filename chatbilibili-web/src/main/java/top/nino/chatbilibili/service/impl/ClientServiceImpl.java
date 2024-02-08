@@ -24,6 +24,7 @@ import top.nino.service.http.HttpBilibiliServer;
 
 
 import java.util.UUID;
+import java.util.Vector;
 
 /**
  * @author nino
@@ -50,6 +51,7 @@ public class ClientServiceImpl implements ClientService {
             return;
         }
         GlobalSettingCache.ROOM_ID = roomStatusInfo.getRoom_id();
+        GlobalSettingCache.ALL_SETTING_CONF.setRoomId(GlobalSettingCache.ROOM_ID);
         GlobalSettingCache.ANCHOR_UID = roomStatusInfo.getUid();
         GlobalSettingCache.LIVE_STATUS = roomStatusInfo.getLive_status();
         if (GlobalSettingCache.LIVE_STATUS == 1) {
@@ -107,64 +109,66 @@ public class ClientServiceImpl implements ClientService {
 
         // 启动心跳线程
         threadService.startHeartCheckBilibiliDanmuServerThread();
+
+        GlobalSettingCache.danmuList = new Vector<>(100);
+        GlobalSettingCache.logList = new Vector<>(100);
     }
 
     @Override
     public void reConnService() throws Exception {
-        if (!GlobalSettingCache.bilibiliWebSocketProxy.isOpen()) {
-            threadService.closeAll();
-            RoomStatusInfo roomStatusInfo = HttpBilibiliServer.httpGetRoomStatusInfo(GlobalSettingCache.ROOM_ID);
-            RoomAnchorInfo roomAnchorInfo = HttpBilibiliServer.httpGetRoomAnchorInfo(GlobalSettingCache.ROOM_ID, GlobalSettingCache.SHORT_ROOM_ID);
-            try {
-                if (roomStatusInfo.getRoom_id() < 1 || roomStatusInfo.getRoom_id() == null) {
-                    return;
-                }
-            } catch (Exception e) {
-                return;
-            }
-            if (roomStatusInfo.getShort_id() > 0) {
-                GlobalSettingCache.SHORT_ROOM_ID = roomStatusInfo.getShort_id();
-            }
-            GlobalSettingCache.ROOM_ID = roomStatusInfo.getRoom_id();
-            DanmuInfo roomDanmuInfo = HttpBilibiliServer.httpGetDanmuInfo(GlobalSettingCache.COOKIE_VALUE, GlobalSettingCache.ROOM_ID, GlobalSettingCache.SHORT_ROOM_ID);
-            if (roomDanmuInfo == null) {
-                return;
-            }
-            GlobalSettingCache.ANCHOR_UID = roomStatusInfo.getUid();
-            GlobalSettingCache.FANS_NUM = HttpBilibiliServer.httpGetAnchorFanSum(GlobalSettingCache.ANCHOR_UID);
-
-            GlobalSettingCache.ROOM_DANMU_WEBSOCKET_URL = DanmuUtils.randomGetWebsocketUrl(GlobalSettingCache.ROOM_DANMU_WEBSOCKET_URL, roomDanmuInfo.getHost_list());
-
-            GlobalSettingCache.ANCHOR_NAME = roomAnchorInfo.getUname();
-            GlobalSettingCache.LIVE_STATUS = roomStatusInfo.getLive_status();
-            if (GlobalSettingCache.LIVE_STATUS == 1) {
-                GlobalSettingCache.IS_ROOM_POPULARITY = true;
-            }
-            if (StringUtils.isNotBlank(GlobalSettingCache.COOKIE_VALUE)) {
-                GlobalSettingCache.USER_BARRAGE_MESSAGE = HttpBilibiliServer.httpGetUserBarrageMsg(GlobalSettingCache.SHORT_ROOM_ID, GlobalSettingCache.COOKIE_VALUE);
-                GlobalSettingCache.USER_MANAGER = HttpBilibiliServer.httpGetUserManagerMsg(GlobalSettingCache.ROOM_ID, GlobalSettingCache.SHORT_ROOM_ID, GlobalSettingCache.COOKIE_VALUE);
-            }
-            FirstSecurityData firstSecurityData = null;
-            GlobalSettingCache.bilibiliWebSocketProxy = new BilibiliWebSocketProxy(GlobalSettingCache.ROOM_DANMU_WEBSOCKET_URL, roomAnchorInfo);
-            if (StringUtils.isNotBlank(GlobalSettingCache.COOKIE_VALUE)) {
-                firstSecurityData = new FirstSecurityData(GlobalSettingCache.USER.getUid(), GlobalSettingCache.ROOM_ID,
-                        roomDanmuInfo.getToken());
-            } else {
-                firstSecurityData = new FirstSecurityData(GlobalSettingCache.ROOM_ID, roomDanmuInfo.getToken());
-            }
-            byte[] byte_1 = ParseWebsocketMessageUtils.BEhandle(DanmuByteDataHandle.getBarrageHeadHandle(
-                    firstSecurityData.toJson().toString().getBytes().length + GlobalSettingCache.PACKAGE_HEAD_LENGTH,
-                    GlobalSettingCache.PACKAGE_HEAD_LENGTH, GlobalSettingCache.PACKAGE_VERSION, GlobalSettingCache.FIRST_PACKAGE_TYPE,
-                    GlobalSettingCache.packageOther));
-            byte[] byte_2 = firstSecurityData.toJson().getBytes();
-            byte[] req = ByteUtils.byteMerger(byte_1, byte_2);
-            GlobalSettingCache.bilibiliWebSocketProxy.send(req);
-            GlobalSettingCache.bilibiliWebSocketProxy.send(HexUtils.fromHexString(GlobalSettingCache.HEART_BYTE));
-            threadService.startHeartCheckBilibiliDanmuServerThread();
-            if (GlobalSettingCache.bilibiliWebSocketProxy.isOpen()) {
-                settingService.writeAndReadSettingAndStartReceive();
-            }
+        if(ObjectUtils.isEmpty(GlobalSettingCache.bilibiliWebSocketProxy) || GlobalSettingCache.bilibiliWebSocketProxy.isOpen()) {
+            return;
         }
+
+        threadService.closeAll();
+        RoomStatusInfo roomStatusInfo = HttpBilibiliServer.httpGetRoomStatusInfo(GlobalSettingCache.ROOM_ID);
+        RoomAnchorInfo roomAnchorInfo = HttpBilibiliServer.httpGetRoomAnchorInfo(GlobalSettingCache.ROOM_ID, GlobalSettingCache.SHORT_ROOM_ID);
+        try {
+            if (roomStatusInfo.getRoom_id() < 1 || roomStatusInfo.getRoom_id() == null) {
+                return;
+            }
+        } catch (Exception e) {
+            return;
+        }
+        if (roomStatusInfo.getShort_id() > 0) {
+            GlobalSettingCache.SHORT_ROOM_ID = roomStatusInfo.getShort_id();
+        }
+        GlobalSettingCache.ROOM_ID = roomStatusInfo.getRoom_id();
+        DanmuInfo roomDanmuInfo = HttpBilibiliServer.httpGetDanmuInfo(GlobalSettingCache.COOKIE_VALUE, GlobalSettingCache.ROOM_ID, GlobalSettingCache.SHORT_ROOM_ID);
+        if (roomDanmuInfo == null) {
+            return;
+        }
+        GlobalSettingCache.ANCHOR_UID = roomStatusInfo.getUid();
+        GlobalSettingCache.FANS_NUM = HttpBilibiliServer.httpGetAnchorFanSum(GlobalSettingCache.ANCHOR_UID);
+
+        GlobalSettingCache.ROOM_DANMU_WEBSOCKET_URL = DanmuUtils.randomGetWebsocketUrl(GlobalSettingCache.ROOM_DANMU_WEBSOCKET_URL, roomDanmuInfo.getHost_list());
+
+        GlobalSettingCache.ANCHOR_NAME = roomAnchorInfo.getUname();
+        GlobalSettingCache.LIVE_STATUS = roomStatusInfo.getLive_status();
+        if (GlobalSettingCache.LIVE_STATUS == 1) {
+            GlobalSettingCache.IS_ROOM_POPULARITY = true;
+        }
+        if (StringUtils.isNotBlank(GlobalSettingCache.COOKIE_VALUE)) {
+            GlobalSettingCache.USER_BARRAGE_MESSAGE = HttpBilibiliServer.httpGetUserBarrageMsg(GlobalSettingCache.SHORT_ROOM_ID, GlobalSettingCache.COOKIE_VALUE);
+            GlobalSettingCache.USER_MANAGER = HttpBilibiliServer.httpGetUserManagerMsg(GlobalSettingCache.ROOM_ID, GlobalSettingCache.SHORT_ROOM_ID, GlobalSettingCache.COOKIE_VALUE);
+        }
+        FirstSecurityData firstSecurityData = null;
+        GlobalSettingCache.bilibiliWebSocketProxy = new BilibiliWebSocketProxy(GlobalSettingCache.ROOM_DANMU_WEBSOCKET_URL, roomAnchorInfo);
+        if (StringUtils.isNotBlank(GlobalSettingCache.COOKIE_VALUE)) {
+            firstSecurityData = new FirstSecurityData(GlobalSettingCache.USER.getUid(), GlobalSettingCache.ROOM_ID,
+                    roomDanmuInfo.getToken());
+        } else {
+            firstSecurityData = new FirstSecurityData(GlobalSettingCache.ROOM_ID, roomDanmuInfo.getToken());
+        }
+        byte[] byte_1 = ParseWebsocketMessageUtils.BEhandle(DanmuByteDataHandle.getBarrageHeadHandle(
+                firstSecurityData.toJson().toString().getBytes().length + GlobalSettingCache.PACKAGE_HEAD_LENGTH,
+                GlobalSettingCache.PACKAGE_HEAD_LENGTH, GlobalSettingCache.PACKAGE_VERSION, GlobalSettingCache.FIRST_PACKAGE_TYPE,
+                GlobalSettingCache.packageOther));
+        byte[] byte_2 = firstSecurityData.toJson().getBytes();
+        byte[] req = ByteUtils.byteMerger(byte_1, byte_2);
+        GlobalSettingCache.bilibiliWebSocketProxy.send(req);
+        GlobalSettingCache.bilibiliWebSocketProxy.send(HexUtils.fromHexString(GlobalSettingCache.HEART_BYTE));
+        threadService.startHeartCheckBilibiliDanmuServerThread();
     }
 
     @Override
@@ -193,4 +197,71 @@ public class ClientServiceImpl implements ClientService {
         }
         return flag;
     }
+
+
+    /**
+     * 根据当前的配置
+     * 运行处理弹幕的线程
+     */
+    @Override
+    public void startReceiveDanmuThread() {
+
+        synchronized (GlobalSettingCache.ALL_SETTING_CONF) {
+
+            if (ObjectUtils.isEmpty(GlobalSettingCache.ROOM_ID) || GlobalSettingCache.ROOM_ID <= 0) {
+                // 这些配置都是跟直播间相关的，所以必须设置直播间
+                return;
+            }
+
+            if (ObjectUtils.isEmpty(GlobalSettingCache.bilibiliWebSocketProxy) || !GlobalSettingCache.bilibiliWebSocketProxy.isOpen()) {
+                return;
+            }
+
+            // 到了这里说明 已经连接到了 一个直播间
+            // 所以直接启动弹幕接收
+            threadService.startParseMessageThread();
+
+            // 是否使用记录日志线程
+            if (GlobalSettingCache.ALL_SETTING_CONF.is_log()) {
+                threadService.startLogThread();
+            } else {
+                threadService.closeLogThread();
+            }
+        }
+    }
+
+
+    // 关闭用户相关线程
+    @Override
+    public void closeByUserLogOut(){
+        // 关闭日志线程
+        threadService.closeLogThread();
+        // 关闭心跳检测线程
+        threadService.closeHeartByteThread();
+        // 关闭解析弹幕线程
+        threadService.closeParseMessageThread();
+        GlobalSettingCache.logList = null;
+        GlobalSettingCache.danmuList = null;
+        GlobalSettingCache.bilibiliWebSocketProxy.close();
+        log.info("关闭 websocket 及其 相关线程成功");
+    }
+
+
+    // 关闭用户相关线程
+    @Override
+    public void closeConnection(){
+        // 关闭日志线程
+        threadService.closeLogThread();
+        // 关闭心跳检测线程
+        threadService.closeHeartByteThread();
+        // 关闭解析弹幕线程
+        threadService.closeParseMessageThread();
+        GlobalSettingCache.logList = null;
+        GlobalSettingCache.danmuList = null;
+        GlobalSettingCache.bilibiliWebSocketProxy.close();
+        GlobalSettingCache.bilibiliWebSocketProxy = null;
+        log.info("关闭 websocket 及其 相关线程成功");
+    }
+
+
 }

@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import top.nino.api.model.vo.WebsocketMessagePackage;
+import top.nino.api.model.vo.websocket.WebsocketMessagePackageVo;
 import top.nino.chatbilibili.GlobalSettingCache;
 import top.nino.api.model.danmu.*;
 import top.nino.api.model.superchat.SuperChat;
@@ -35,9 +35,6 @@ public class ParseDanmuMessageThread extends Thread {
 
         while (!closeFlag) {
 
-            String message = null;
-
-
             // 当没有弹幕需要解析时，等待
             if (CollectionUtils.isEmpty(GlobalSettingCache.danmuList) || StringUtils.isBlank(GlobalSettingCache.danmuList.get(0))) {
                 synchronized (GlobalSettingCache.parseDanmuMessageThread) {
@@ -49,11 +46,8 @@ public class ParseDanmuMessageThread extends Thread {
                 }
             }
 
-            synchronized (GlobalSettingCache.danmuList) {
                 // 拿取第一条消息
-                message = GlobalSettingCache.danmuList.get(0);
-            }
-
+            String message = GlobalSettingCache.danmuList.get(0);
 
 
             JSONObject messageJsonObject = JSONObject.parseObject(message);
@@ -290,7 +284,7 @@ public class ParseDanmuMessageThread extends Thread {
 
         try {
             // 发送到本地网页
-            String sendToViewString = WebsocketMessagePackage.toJson(cmd, (short) 0, result);
+            String sendToViewString = WebsocketMessagePackageVo.toJson(cmd, (short) 0, result);
             log.info("向前端页面发送:{}", sendToViewString);
             chatBilibiliWebsocketController.sendMessageToView(sendToViewString);
         } catch (Exception e) {
@@ -298,8 +292,11 @@ public class ParseDanmuMessageThread extends Thread {
         }
 
         // 日志处理
-        if (ObjectUtils.isNotEmpty(GlobalSettingCache.logThread) && !GlobalSettingCache.logThread.FLAG) {
-            GlobalSettingCache.logList.add(parseResultString);
+        if (ObjectUtils.isNotEmpty(GlobalSettingCache.logThread) && !GlobalSettingCache.logThread.closeFlag) {
+            synchronized (GlobalSettingCache.logList) {
+                GlobalSettingCache.logList.add(parseResultString);
+            }
+
             synchronized (GlobalSettingCache.logThread) {
                 GlobalSettingCache.logThread.notify();
             }

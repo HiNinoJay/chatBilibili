@@ -113,34 +113,18 @@ public class GlobalSettingCache {
 
 
 
-
-	//------------- 3.行为-----------开始----------------------
-
-	public static void clearUserCache(){
-		GlobalSettingCache.COOKIE_VALUE = null;
-		GlobalSettingCache.USER_COOKIE_INFO = null;
-		GlobalSettingCache.USER = null;
-		GlobalSettingCache.USER_BARRAGE_MESSAGE = null;
-	}
-
-
-	//------------- 3.行为-----------结束----------------------
-
-
-
-
-
-
-	//------------- 4.线程----------开始----------------------
-
-	// 处理弹幕包集合
-	public final static Vector<String> danmuList = new Vector<>(100);
-
-	// log日志待写入集合
-	public final static Vector<String> logList = new Vector<>(100);
+	//------------- 3.线程----------开始----------------------
 
 	// websocket客户端主线程
 	public static BilibiliWebSocketProxy bilibiliWebSocketProxy;
+
+	// 处理弹幕包集合
+	public volatile static Vector<String> danmuList;
+
+	// log日志待写入集合
+	public volatile static Vector<String> logList;
+
+
 
 	// 心跳线程
 	public static HeartCheckBilibiliDanmuServerThread heartCheckBilibiliDanmuServerThread;
@@ -154,11 +138,22 @@ public class GlobalSettingCache {
 	// 重新连接线程
 	public static ReConnThread reConnThread;
 
-	//------------- 4.线程-----------结束----------------------
+	//------------- 3.线程-----------结束----------------------
 
 
 
+	//------------- 4.行为-----------开始----------------------
 
+	public static void clearUserCache(){
+		GlobalSettingCache.COOKIE_VALUE = null;
+		GlobalSettingCache.USER_COOKIE_INFO = null;
+		GlobalSettingCache.USER = null;
+		GlobalSettingCache.USER_BARRAGE_MESSAGE = null;
+		GlobalSettingCache.USER_MANAGER = null;
+	}
+
+
+	//------------- 4.行为-----------结束----------------------
 
 
 
@@ -173,17 +168,9 @@ public class GlobalSettingCache {
 
 
 
-	//礼物感谢集
-	public final static Map<String, Vector<Gift>> thankGiftConcurrentHashMap = new ConcurrentHashMap<String,Vector<Gift>>(3000);
-
 	//待发弹幕集
 	public final static Vector<String> barrageString = new Vector<String>();
 
-
-
-
-	//感谢礼物数据集线程
-	public static ParseThankGiftThread parsethankGiftThread = new ParseThankGiftThread();
 
 	//用户在线线程集
 	public static HeartBeatThread heartBeatThread;
@@ -203,27 +190,9 @@ public class GlobalSettingCache {
 	public static int manager_login_size=0;
 
 
-	//测试模式
-	public static boolean TEST_MODE = false;
-
-
-	public static void init_send(){
-		GlobalSettingCache.thankGiftConcurrentHashMap.clear();
-		GlobalSettingCache.barrageString.clear();
-	}
-
-	public static void init_all(){
-		GlobalSettingCache.danmuList.clear();
-		GlobalSettingCache.thankGiftConcurrentHashMap.clear();
-		GlobalSettingCache.barrageString.clear();
-		GlobalSettingCache.logList.clear();
-
-	}
 
 	public static void init_connect(){
-		GlobalSettingCache.danmuList.clear();
 		GlobalSettingCache.barrageString.clear();
-		GlobalSettingCache.logList.clear();
 		GlobalSettingCache.ROOM_ID = null;
 		GlobalSettingCache.ANCHOR_NAME = null;
 		GlobalSettingCache.ANCHOR_UID= null;

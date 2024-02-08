@@ -47,26 +47,25 @@ public class BilibiliWebsocket extends WebSocketClient {
 	@Override
 	public void onClose(int code, String reason, boolean remote) {
 		log.info("websocket connect close(连接已经断开)，纠错码:" + code);
-		GlobalSettingCache.heartCheckBilibiliDanmuServerThread.HFLAG = true;
-		GlobalSettingCache.parseDanmuMessageThread.closeFlag = true;
-		if (code != 1000) {
-			log.info("websocket connect close(连接意外断开，正在尝试重连)，错误码:" + code);
-			if (!GlobalSettingCache.bilibiliWebSocketProxy.isOpen()) {
-				if (GlobalSettingCache.reConnThread != null) {
-					if (GlobalSettingCache.reConnThread.getState().toString().equals("TERMINATED")) {
-						GlobalSettingCache.reConnThread = new ReConnThread();
-						GlobalSettingCache.reConnThread.start();
-					} else {
 
-					}
-				} else {
-					GlobalSettingCache.reConnThread = new ReConnThread();
-					GlobalSettingCache.reConnThread.start();
-				}
-			} else {
-				GlobalSettingCache.reConnThread.RFLAG = true;
-			}
-		}
+//		GlobalSettingCache.heartCheckBilibiliDanmuServerThread.HFLAG = true;
+//		GlobalSettingCache.parseDanmuMessageThread.closeFlag = true;
+//		if (code != 1000) {
+//			log.info("websocket connect close(连接意外断开，正在尝试重连)，错误码:" + code);
+//			if (!GlobalSettingCache.bilibiliWebSocketProxy.isOpen()) {
+//				if (GlobalSettingCache.reConnThread != null) {
+//					if (GlobalSettingCache.reConnThread.getState().toString().equals("TERMINATED")) {
+//						GlobalSettingCache.reConnThread = new ReConnThread();
+//						GlobalSettingCache.reConnThread.start();
+//					}
+//				} else {
+//					GlobalSettingCache.reConnThread = new ReConnThread();
+//					GlobalSettingCache.reConnThread.start();
+//				}
+//			} else {
+//				todo GlobalSettingCache.reConnThread.RFLAG = true;
+//			}
+//		}
 	}
 
 	@Override

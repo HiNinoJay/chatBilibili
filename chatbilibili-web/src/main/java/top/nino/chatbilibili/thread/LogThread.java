@@ -14,16 +14,17 @@ import top.nino.core.file.LogFileUtils;
 @Slf4j
 public class LogThread extends Thread{
 
-	public volatile boolean FLAG = false;
+	public volatile boolean closeFlag = false;
 
 	@Override
 	public void run() {
 
-		while (!FLAG) {
+		while (!closeFlag) {
 
 			if(ObjectUtils.isEmpty(GlobalSettingCache.bilibiliWebSocketProxy)&& !GlobalSettingCache.bilibiliWebSocketProxy.isOpen()) {
 				return;
 			}
+			String logString = GlobalSettingCache.logList.get(0);
 
 			if(CollectionUtils.isEmpty(GlobalSettingCache.logList) || StringUtils.isBlank(GlobalSettingCache.logList.get(0))) {
 				synchronized (GlobalSettingCache.logThread) {
@@ -35,7 +36,11 @@ public class LogThread extends Thread{
 				}
 			}
 
-			String logString = GlobalSettingCache.logList.get(0);
+
+
+			if(StringUtils.isBlank(logString)) {
+				continue;
+			}
 			LogFileUtils.logFile(logString, GlobalSettingCache.GLOBAL_SETTING_FILE_NAME, GlobalSettingCache.ROOM_ID);
 
 			GlobalSettingCache.logList.remove(0);

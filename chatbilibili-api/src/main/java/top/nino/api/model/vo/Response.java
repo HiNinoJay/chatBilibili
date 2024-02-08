@@ -37,13 +37,7 @@ public class Response<T> {
 		this.result = result;
 		this.timestamp=timestamp;
 	}
-	public Response(ResponseCode code, String msg, Object result,Timestamp timestamp) {
-		super();
-		this.code = code.getCode();
-		this.msg = code.getCnMsg();
-		this.result = result;
-		this.timestamp=timestamp;
-	}
+
 
 	@SuppressWarnings("rawtypes")
 	public static Response success(Object result, HttpServletRequest request) {
@@ -51,7 +45,7 @@ public class Response<T> {
 		Calendar calendar = Calendar.getInstance();
 		String times = dateFormat.format(calendar.getTime());
 		Timestamp timestamp = Timestamp.valueOf(times.toString());
-		return new Response(ResponseCode.normal,"",result,timestamp);
+		return new Response(ResponseCode.SUCCESS, result, timestamp);
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -60,7 +54,7 @@ public class Response<T> {
 		Calendar calendar = Calendar.getInstance();
 		String times = dateFormat.format(calendar.getTime());
 		Timestamp timestamp = Timestamp.valueOf(times.toString());
-		return new Response(ResponseCode.syserror,"",timestamp);
+		return new Response(ResponseCode.SYSTEM_ERROR,"",timestamp);
 	}
 
 	public static Response error(ResponseCode responseCode, HttpServletRequest request) {

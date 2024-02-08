@@ -12,7 +12,7 @@ public interface ThreadService {
 
 	void closeAll();
 
-	void closeUser();
+	void closeByUserLogOut();
 
 	// 开启处理弹幕包线程
 	void startParseMessageThread();
