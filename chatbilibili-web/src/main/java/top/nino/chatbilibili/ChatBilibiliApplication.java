@@ -30,7 +30,7 @@ public class ChatBilibiliApplication implements WebMvcConfigurer, CommandLineRun
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		globalSettingFileService.createAndValidateCookieAndLoadAndWrite();
+		globalSettingFileService.createOrLoadSettingFile();
 		registry.addInterceptor(globalViewInterceptor).addPathPatterns("/**");
 	}
 

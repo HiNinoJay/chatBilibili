@@ -233,22 +233,6 @@ public class ClientServiceImpl implements ClientService {
 
     // 关闭用户相关线程
     @Override
-    public void closeByUserLogOut(){
-        // 关闭日志线程
-        threadService.closeLogThread();
-        // 关闭心跳检测线程
-        threadService.closeHeartByteThread();
-        // 关闭解析弹幕线程
-        threadService.closeParseMessageThread();
-        GlobalSettingCache.logList = null;
-        GlobalSettingCache.danmuList = null;
-        GlobalSettingCache.bilibiliWebSocketProxy.close();
-        log.info("关闭 websocket 及其 相关线程成功");
-    }
-
-
-    // 关闭用户相关线程
-    @Override
     public void closeConnection(){
         // 关闭日志线程
         threadService.closeLogThread();

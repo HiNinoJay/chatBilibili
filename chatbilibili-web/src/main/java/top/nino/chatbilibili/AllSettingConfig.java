@@ -82,7 +82,7 @@ public class AllSettingConfig implements Serializable {
     private String manager_key = "202cb962ac59075b964b07152d234b70";
 
 
-    public String toJson() {
+    public String objectToJson() {
         return FastJsonUtils.toJson(this);
     }
 
@@ -91,7 +91,7 @@ public class AllSettingConfig implements Serializable {
      * @param base64 将json字符串base64编码的内容
      * @return is not null
      */
-    public static AllSettingConfig of(String base64){
+    public static AllSettingConfig jsonToObject(String base64){
         Assert.notNull(base64, "Base64 must cannot be null");
         try {
             //fastjson没有完善的javadoc, 方法抛出的异常也未明确指出. 是否考虑更换较规范的库?

@@ -63,7 +63,7 @@ public class ViewIndexController {
             if(ObjectUtils.isNotEmpty(GlobalSettingCache.ROOM_ID) &&
                     ObjectUtils.isNotEmpty(GlobalSettingCache.bilibiliWebSocketProxy)) {
 
-                clientService.closeByUserLogOut();
+                clientService.closeConnection();
 
                 try {
                     clientService.loadRoomInfoAndOpenWebSocket(GlobalSettingCache.ROOM_ID);

@@ -7,8 +7,8 @@ package top.nino.chatbilibili.service;
  */
 public interface GlobalSettingFileService {
 
-    boolean createAndValidateCookieAndLoadAndWrite();
+    void createOrLoadSettingFile();
 
-    void startReceiveDanmuThread();
+    void refreshValidLoginInfoToFile();
 
 }

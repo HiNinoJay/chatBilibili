@@ -52,7 +52,7 @@ public class SettingServiceImpl implements SettingService {
             }
 
             // 页面上的所有配置, 还把上一次连接到的直播间号保存了
-            localGlobalSettingMap.put(GlobalSettingCache.FILE_SETTING_PREFIX, BASE64Utils.encode(GlobalSettingCache.ALL_SETTING_CONF.toJson().getBytes()));
+            localGlobalSettingMap.put(GlobalSettingCache.FILE_SETTING_PREFIX, BASE64Utils.encode(GlobalSettingCache.ALL_SETTING_CONF.objectToJson().getBytes()));
 
             // 将当前的全局配置写到本地
             LocalGlobalSettingFileUtils.writeFile(GlobalSettingCache.GLOBAL_SETTING_FILE_NAME, localGlobalSettingMap);

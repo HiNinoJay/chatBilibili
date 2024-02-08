@@ -18,72 +18,41 @@ import java.util.List;
 public class FastJsonUtils {
 
 	private static final SerializeConfig CONFIG = new SerializeConfig();
-
 	private static final String FORMAT_TIME = "yyyy-MM-dd HH:mm:ss";
+
+	static {
+		CONFIG.put(Date.class, new SimpleDateFormatSerializer(FORMAT_TIME));
+	}
 
 	@SuppressWarnings("unused")
 	private static final String FORMAT_DATE = "yyyy-MM-dd";
 
 	private static final SerializerFeature[] FEATURES = {
-
 				SerializerFeature.WriteMapNullValue,
-
 				SerializerFeature.WriteDateUseDateFormat,
-
 				SerializerFeature.WriteNullListAsEmpty
-
-	}; 
-
-	
-
-//	WriteMapNullValue
-
-//	WriteDateUseDateFormat
-
-	static {
-
-		CONFIG.put(Date.class, new SimpleDateFormatSerializer(FORMAT_TIME));
-
-	}
-
-	
+	};
 
 	public static <T> T parseObject(String json, Class<T> clazz) {
-
 		try {
-
 			T t = JSON.parseObject(json, clazz);
-
 			return t;
-
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
-
 		return null;
-
 	}
 
 	
 
 	public static <T> List<T> parseList(String json, Class<T> clazz) {
-
 		try {
-
 			List<T> list = JSON.parseArray(json, clazz);
-
 			return list;
-
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
-
 		return null;
-
 	}
 
 	
@@ -99,41 +68,25 @@ public class FastJsonUtils {
 	 */
 
 	public static String toJson(Object object) {
-
 		try {
-
 			String json = JSON.toJSONString(object, CONFIG, FEATURES);
-
 			return json;
-
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
-
 		return null;
-
 	}
 
 	
 
 	public static JSONObject getAsJSONObjectFromObject(String json, String key) {
-
 		try {
-
 			JSONObject jsonObject = JSON.parseObject(json);
-
 			return jsonObject.getJSONObject(key);
-
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
-
 		return null;
-
 	}
 
 	
@@ -141,39 +94,24 @@ public class FastJsonUtils {
 	public static JSONArray getAsJSONArrayFromObject(String json, String key) {
 
 		try {
-
 			JSONObject jsonObject = JSON.parseObject(json);
-
 			return jsonObject.getJSONArray(key);
-
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
-
 		return null;
-
 	}
 
 	
 
 	public static String getAsStringFromObject(String json, String key) {
-
 		try {
-
 			JSONObject jsonObject = JSON.parseObject(json);
-
 			return jsonObject.getString(key);
-
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
-
 		return null;
-
 	}
 
 	
@@ -181,19 +119,12 @@ public class FastJsonUtils {
 	public static Integer getAsIntegerFromObject(String json, String key) {
 
 		try {
-
 			JSONObject jsonObject = JSON.parseObject(json);
-
 			return jsonObject.getInteger(key);
-
 		} catch (Exception e) {
-
 			e.printStackTrace();
-
 		}
-
 		return null;
-
 	}
 
 	

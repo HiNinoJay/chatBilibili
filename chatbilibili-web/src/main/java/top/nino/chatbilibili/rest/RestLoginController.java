@@ -2,12 +2,15 @@ package top.nino.chatbilibili.rest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import top.nino.api.model.enums.ResponseCode;
 import top.nino.api.model.login.QrCodeInfo;
+import top.nino.api.model.user.User;
 import top.nino.api.model.user.UserCookieInfo;
 import top.nino.api.model.vo.Response;
 import top.nino.chatbilibili.GlobalSettingCache;
+import top.nino.chatbilibili.service.ClientService;
 import top.nino.chatbilibili.service.GlobalSettingFileService;
 import top.nino.core.http.CookieUtils;
 import top.nino.core.qrcode.QrcodeUtils;
@@ -27,8 +30,11 @@ import javax.servlet.http.HttpServletResponse;
 public class RestLoginController {
 
 
-    @Resource
+    @Autowired
     private GlobalSettingFileService globalSettingFileService;
+
+    @Autowired
+    private ClientService clientService;
 
 
     /**
@@ -40,22 +46,23 @@ public class RestLoginController {
     @ResponseBody
     @PostMapping(value = "/loginByCookie")
     public Response<?> loginByCookie(@RequestParam(name = "cookieValue") String cookieValue, HttpServletRequest req){
-        UserCookieInfo userCookieInfo = CookieUtils.parseCookie(cookieValue);
-        if(userCookieInfo.isValidFlag()){
+        User user = HttpBilibiliServer.httpGetUserInfo(cookieValue);
+        if(ObjectUtils.isNotEmpty(user)) {
             GlobalSettingCache.COOKIE_VALUE = cookieValue;
-            GlobalSettingCache.USER_COOKIE_INFO = userCookieInfo;
-            boolean loadFlag = globalSettingFileService.createAndValidateCookieAndLoadAndWrite();
-            if(loadFlag) {
-                // 因为新的用户信息来了，所以要重新连接直播间
-                globalSettingFileService.startReceiveDanmuThread();
+            GlobalSettingCache.USER_COOKIE_INFO = CookieUtils.parseCookie(cookieValue);;
+            GlobalSettingCache.USER = user;
+            if(ObjectUtils.isNotEmpty(GlobalSettingCache.bilibiliWebSocketProxy)) {
+                // 先关闭以前的
+                clientService.closeConnection();
+                try {
+                    clientService.loadRoomInfoAndOpenWebSocket(GlobalSettingCache.ROOM_ID);
+                } catch (Exception e) {
+                    log.error("重新开启b站弹幕服务器连接异常", e);
+                }
             }
-            // 弹幕长度 和管理员信息 刷新
-            if (StringUtils.isNotBlank(GlobalSettingCache.COOKIE_VALUE)) {
-                GlobalSettingCache.USER_BARRAGE_MESSAGE = HttpBilibiliServer.httpGetUserBarrageMsg(GlobalSettingCache.SHORT_ROOM_ID, GlobalSettingCache.COOKIE_VALUE);
-                GlobalSettingCache.USER_MANAGER = HttpBilibiliServer.httpGetUserManagerMsg(GlobalSettingCache.ROOM_ID, GlobalSettingCache.SHORT_ROOM_ID, GlobalSettingCache.COOKIE_VALUE);
-            }
+            globalSettingFileService.refreshValidLoginInfoToFile();
         }
-        return Response.success(userCookieInfo.isValidFlag(), req);
+        return Response.success(ObjectUtils.isNotEmpty(user), req);
     }
 
     // 拿到B站官方登录二维码信息
@@ -85,17 +92,21 @@ public class RestLoginController {
         }
 
         Response response = HttpBilibiliServer.httpCheckQrcodeScanStatus(qrCodeInfo.getQrcode_key());
+
         if(response.getCode().equals(ResponseCode.SUCCESS.getCode()) && ObjectUtils.isNotEmpty(response.getResult())) {
             GlobalSettingCache.COOKIE_VALUE = String.valueOf(response.getResult());
             GlobalSettingCache.USER_COOKIE_INFO = CookieUtils.parseCookie(GlobalSettingCache.COOKIE_VALUE);
-            // 弹幕长度 和管理员信息 刷新
-            GlobalSettingCache.USER_BARRAGE_MESSAGE = HttpBilibiliServer.httpGetUserBarrageMsg(GlobalSettingCache.SHORT_ROOM_ID, GlobalSettingCache.COOKIE_VALUE);
-            GlobalSettingCache.USER_MANAGER = HttpBilibiliServer.httpGetUserManagerMsg(GlobalSettingCache.ROOM_ID, GlobalSettingCache.SHORT_ROOM_ID, GlobalSettingCache.COOKIE_VALUE);
-            boolean loadFlag = globalSettingFileService.createAndValidateCookieAndLoadAndWrite();
-            if(loadFlag) {
-                // 因为新的用户信息来了，所以要重新连接直播间
-                globalSettingFileService.startReceiveDanmuThread();
+            GlobalSettingCache.USER = HttpBilibiliServer.httpGetUserInfo(GlobalSettingCache.COOKIE_VALUE);;
+            if(ObjectUtils.isNotEmpty(GlobalSettingCache.bilibiliWebSocketProxy)) {
+                // 先关闭以前的
+                clientService.closeConnection();
+                try {
+                    clientService.loadRoomInfoAndOpenWebSocket(GlobalSettingCache.ROOM_ID);
+                } catch (Exception e) {
+                    log.error("重新开启b站弹幕服务器连接异常", e);
+                }
             }
+            globalSettingFileService.refreshValidLoginInfoToFile();
         }
         return response;
     }

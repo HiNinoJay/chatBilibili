@@ -11,7 +11,6 @@ public interface ClientService {
 
 	void startReceiveDanmuThread();
 
-	void closeByUserLogOut();
 
 	void closeConnection();
 }
