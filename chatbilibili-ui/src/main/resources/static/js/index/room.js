@@ -71,6 +71,7 @@ $(document).on('click', '.showDanmuButton', function (e) {
     if($('.showDanmuButton').text() == "刷新") {
         $('.danmuMessageBoard').empty();
     } else {
+        $('.danmuMessageBoard').empty();
         var flag = connectMethod.startReceiveDanmu();
         if(flag) {
             // 连接websocket服务器，开始接受弹幕

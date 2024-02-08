@@ -69,14 +69,12 @@ public class Gift implements Serializable,Cloneable{
 
 	public Gift() {
 		super();
-		// TODO 自动生成的构造函数存根
 	}
 
 	public static Gift getGift() {
 		try {
 			return (Gift) gift.clone();
 		} catch (CloneNotSupportedException e) {
-			// TODO 自动生成的 catch 块
 			e.printStackTrace();
 		}
 		return new Gift();
@@ -103,7 +101,6 @@ public class Gift implements Serializable,Cloneable{
 			g.medal_info = medal_info;
 			return g;
 		} catch (CloneNotSupportedException e) {
-			// TODO 自动生成的 catch 块
 			e.printStackTrace();
 		}
 		return new Gift();

@@ -72,7 +72,13 @@ public class ParseDanmuMessageThread extends Thread {
                         break;
                     }
 
-                    DanmuMessage danmuMessage = DanmuMessage.getDanmuMessageByJSONArray(messageJsonObject.getJSONArray("info"));
+                    DanmuMessage danmuMessage = null;
+                    try {
+                        danmuMessage = DanmuMessage.getDanmuMessageByJSONArray(messageJsonObject.getJSONArray("info"));
+                    } catch (Exception e) {
+                        log.info("弹幕{}解析异常", messageJsonObject.toString(), e);
+                        break;
+                    }
 
                     if(danmuMessage.getMsg_type() != 0) {
                         break;
@@ -174,8 +180,9 @@ public class ParseDanmuMessageThread extends Thread {
                         break;
                     }
 
-                    Gift normalGift = Gift.getGiftByJsonObject(messageJsonObject, gift_type);
+                    Gift normalGift = null;
                     try{
+                        normalGift = Gift.getGiftByJsonObject(giftJsonObject, gift_type);
                         parseResultString = ParseDanmuGiftUtils.parseGiftDanmuContent(normalGift);
                     } catch (Exception e) {
                         log.info("礼物异常:", e);
@@ -203,7 +210,6 @@ public class ParseDanmuMessageThread extends Thread {
                     SuperChat superChat = JSONObject.parseObject(messageJsonObject.getString("data"), SuperChat.class);
 
                     parseResultString = ParseDanmuSuperChatUtils.parseSuperChatDanmeContent(superChat);
-                    cmdResultString = "superchat";
                     objectResult = superChat;
                     break;
 

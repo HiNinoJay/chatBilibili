@@ -13,6 +13,7 @@
     <div class="ui container">
         <a href="#" class="header item"  target="_blank">chatBilibili</a>
         <a href="https://github.com/HiNinoJay/chatBilibili" class="header item"  target="_blank">作者</a>
+        <a href="https://live.bilibili.com" class="header item"  target="_blank">B站直播间</a>
         <button class=" ui right align top attached pink color  button loginButton" th:if="!(${loginUser}?exists)">
             登录
         </button>
@@ -89,9 +90,9 @@
     <div class="ui attached segments">
 
         <div class="ui pink segment " th:if="${loginUser}?exists">
-                    <span class="" th:if="${loginUser}?exists">
-                        uid：<span class="" th:text="${loginUser.uid}"></span>
-                    </span>
+            <span class="" th:if="${loginUser}?exists">
+                uid：<span class="" th:text="${loginUser.uid}"></span>
+            </span>
             &nbsp;&nbsp;&nbsp;&nbsp;
             <span class="" th:if="${loginUser}?exists">
                         用户名：<a class="" th:href="@{'https://space.bilibili.com/'+${loginUser.uid}}" th:text="${loginUser.uname}" target="_blank"></a>
