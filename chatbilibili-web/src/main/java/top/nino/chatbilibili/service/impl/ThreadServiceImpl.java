@@ -49,13 +49,9 @@ public class ThreadServiceImpl implements ThreadService {
 		if (ObjectUtils.isNotEmpty(GlobalSettingCache.parseDanmuMessageThread)  && !"TERMINATED".equals(GlobalSettingCache.parseDanmuMessageThread.getState().toString())) {
 			return;
 		}
-
 		GlobalSettingCache.parseDanmuMessageThread = new ParseDanmuMessageThread();
 		GlobalSettingCache.parseDanmuMessageThread.closeFlag = false;
 		GlobalSettingCache.parseDanmuMessageThread.start();
-		if (GlobalSettingCache.parseDanmuMessageThread != null
-				&& !GlobalSettingCache.parseDanmuMessageThread.getState().toString().equals("TERMINATED")) {
-		}
 	}
 
 	@Override

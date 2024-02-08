@@ -27,8 +27,8 @@ function openWebsocketConnection(ip, sliceh) {
 
     // 打开事件
     socket.onopen = function () {
-        console.log("连接已打开");
 
+        console.log("第一次连接已打开");
         $('.connectSegment').addClass('dimmer');
         $('.connectStatusContentSegment').addClass('dimmer');
         $('.danmuSegment').removeClass('dimmer');

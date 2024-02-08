@@ -31,6 +31,7 @@ public class RestRoomController {
     @ResponseBody
     @GetMapping(value = "/connectRoom")
     public Response<?> connectRoom(HttpServletRequest req, @RequestParam("roomId") Long roomId) {
+
         if (ObjectUtils.isEmpty(GlobalSettingCache.bilibiliWebSocketProxy) || !GlobalSettingCache.bilibiliWebSocketProxy.isOpen()) {
             try {
                 clientService.loadRoomInfoAndOpenWebSocket(roomId);
@@ -64,6 +65,14 @@ public class RestRoomController {
         if(!ObjectUtils.isEmpty(GlobalSettingCache.bilibiliWebSocketProxy)) {
             clientService.closeConnection();
         }
+        return Response.success(true, req);
+    }
+
+
+    @ResponseBody
+    @GetMapping(value = "/startReceiveDanmu")
+    public Response<?> startReceiveDanmu(HttpServletRequest req) {
+        clientService.startReceiveDanmuThread();
         return Response.success(true, req);
     }
 }

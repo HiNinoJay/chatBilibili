@@ -31,6 +31,7 @@ $(document).on('click', '.connectButton', function (e) {
                                             `<a href=`  + "https://space.bilibili.com/" + roomInfo.anchorUid  + `>` +
                                                 roomInfo.anchorName +
                                             `</a>` +
+                                            "，当前直播状态：" + roomInfo.liveStatus +
                                          `</span>`;
                 $('.roomInfoSegment').append(connectRoomInfo);
 
@@ -60,16 +61,23 @@ $(document).on('click', '.closeConnectButton', function (e) {
         $('.showDanmuButton').text('显示弹幕');
         $('.connectStatusContentSegment').removeClass('dimmer');
         $('.connectStatusContentSegment').removeClass('dimmer');
+        refresh = false;
     }
 });
 
 // 显示弹幕或刷新
 $(document).on('click', '.showDanmuButton', function (e) {
     console.log("点击显示弹幕/刷新");
-
-    // 连接websocket服务器，开始接受弹幕
-    var localWebsocketUrl = "ws://localhost:1999/chatbilibili/danmu/sub";
-    openWebsocketConnection(localWebsocketUrl, null);
+    if($('.showDanmuButton').text() == "刷新") {
+        $('.danmuMessageBoard').empty();
+    } else {
+        var flag = connectMethod.startReceiveDanmu();
+        if(flag) {
+            // 连接websocket服务器，开始接受弹幕
+            var localWebsocketUrl = "ws://localhost:1999/chatbilibili/danmu/sub";
+            openWebsocketConnection(localWebsocketUrl, null);
+        }
+    }
 });
 
 const connectMethod = {
@@ -127,5 +135,23 @@ const connectMethod = {
             }
         });
         return flag
+    },
+
+    startReceiveDanmu : function() {
+            "use strict";
+            var flag = false;
+            $.ajax({
+                url : './rest/room/startReceiveDanmu',
+                async : false,
+                cache : false,
+                type : 'GET',
+                dataType : 'json',
+                success : function(data) {
+                    if (data.code === "200") {
+                        flag = data.result;
+                    }
+                }
+            });
+            return flag
     },
 };
