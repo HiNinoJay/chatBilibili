@@ -15,3 +15,61 @@ $(document).on('click', '.chatGPTCharacterMenu .item', function (e) {
     }
 
 });
+
+
+$(document).on('click', '.danmuSettingSaveButton', function (e) {
+
+
+});
+
+$(document).on('click', '.danmuSettingUsingButton', function (e) {
+
+    // 创建一个复选框状态对象
+    var checkboxStatus = {
+        danmuStatus: $(".danmuSettingSegment input[name='danmuStatus']").prop('checked'),
+        normalStatus: $(".danmuSettingSegment input[name='normalStatus']").prop('checked'),
+        guardStatus: $(".danmuSettingSegment input[name='guardStatus']").prop('checked'),
+        vipStatus: $(".danmuSettingSegment input[name='vipStatus']").prop('checked'),
+        managerStatus: $(".danmuSettingSegment input[name='managerStatus']").prop('checked'),
+
+        giftStatus: $(".giftSettingSegment input[name='giftStatus']").prop('checked'),
+        normalGiftStatus: $(".giftSettingSegment input[name='normalGiftStatus']").prop('checked'),
+        scGiftStatus: $(".giftSettingSegment input[name='scGiftStatus']").prop('checked'),
+
+        danmuLogStatus: $(".otherDanmuSettingSegment input[name='danmuLogStatus']").prop('checked')
+    };
+
+    // 发送 AJAX 请求到后端
+    $.ajax({
+        url: './rest/setting/danmuUsing',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(checkboxStatus),
+        success: function(response) {
+            if(response.code == "200") {
+                alert("应用成功。")
+            } else {
+                alert("应用失败。")
+            }
+        },
+        error: function(xhr, status, error) {
+            // 请求失败后的处理
+            console.error('发送复选框状态到后端失败:', error);
+        }
+    });
+
+});
+
+
+$(document).on('click', '.chatGPTSettingSaveButton', function (e) {
+
+
+});
+
+
+$(document).on('click', '.SettingUsingButton', function (e) {
+
+
+
+
+});

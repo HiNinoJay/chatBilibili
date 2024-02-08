@@ -25,14 +25,32 @@ public class AllSettingConfig implements Serializable {
 
     private static final long serialVersionUID = 1162255349476806991L;
 
-    // ---------已经在使用--------------
 
     // 上一次的房间号
     private Long roomId;
 
-    // 是否开启弹幕
-    @JSONField(name = "is_barrage")
-    private boolean is_barrage = true;
+    // ---------1.弹幕设置---start-----------
+
+
+    // 是否开启弹幕功能
+    @JSONField(name = "danmuStatus")
+    private boolean danmuStatus = true;
+
+    // 是否开启普通弹幕
+    @JSONField(name = "normalDanmuStatus")
+    private boolean normalDanmuStatus = true;
+
+    // 是否开启舰长弹幕
+    @JSONField(name = "guardDanmuStatus")
+    private boolean guardDanmuStatus = true;
+
+    // 是否开启老爷弹幕
+    @JSONField(name = "vipDanmuStatus")
+    private boolean vipDanmuStatus = true;
+
+    // 是否开启老爷弹幕
+    @JSONField(name = "managerDanmuStatus")
+    private boolean managerDanmuStatus = true;
 
     // 弹幕显示舰长和老爷图标
     @JSONField(name = "is_barrage_guard")
@@ -58,13 +76,33 @@ public class AllSettingConfig implements Serializable {
     @JSONField(name = "is_barrage_anchor_shield")
     private boolean is_barrage_anchor_shield = false;
 
+
+
+    // ---------1.弹幕设置---end------------
+
+
+
+    // ---------2.礼物设置---start-----------
+
     // 信息是否显示礼物消息
-    @JSONField(name = "is_gift")
-    private boolean is_gift = true;
+    @JSONField(name = "giftStatus")
+    private boolean giftStatus = true;
 
     // 信息是否显示免费礼物消息
-    @JSONField(name = "is_gift_free")
-    private boolean is_gift_free = true;
+    @JSONField(name = "freeGiftStatus")
+    private boolean freeGiftStatus = true;
+
+    // 信息是否显示免费礼物消息
+    @JSONField(name = "guardBuyGiftStatus")
+    private boolean guardBuyGiftStatus = true;
+
+    // 信息是否显示免费礼物消息
+    @JSONField(name = "scGiftStatus")
+    private boolean scGiftStatus = true;
+
+
+    // ---------2.礼物设置---end------------
+
 
     // 是否开启日志线程
     @JSONField(name = "is_log")

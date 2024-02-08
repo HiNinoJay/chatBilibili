@@ -149,75 +149,82 @@
 
 
     <span>
-                <span class="ui pink color header">弹幕设置</span>
-                <button class="circular ui icon button">保存</button>
-                <button class="circular ui icon button">应用</button>
-            </span>
+        <span class="ui pink color header">弹幕设置</span>
+        <button class="circular ui icon button danmuSettingUsingButton">应用</button>
+    </span>
     <div class="ui segments">
-        <div class="ui  pink segment">
+        <div class="ui  pink segment danmuSettingSegment">
             <h3 style="color: black;">弹幕显示</h3>
             <div class="ui slider checkbox">
-                <input type="checkbox" name="newsletter" checked="checked">
+                <input type="checkbox" name="danmuStatus" checked="checked">
+                <label>所有</label>
+            </div>
+            <div class="ui slider checkbox">
+                <input type="checkbox" name="normalStatus" checked="checked">
                 <label>普通</label>
             </div>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <div class="ui slider checkbox">
-                <input type="checkbox" name="newsletter" checked="checked">
+                <input type="checkbox" name="guardStatus" checked="checked">
                 <label>舰长</label>
             </div>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <div class="ui slider checkbox">
-                <input type="checkbox" name="newsletter" checked="checked">
+                <input type="checkbox" name="vipStatus" checked="checked">
                 <label>老爷</label>
             </div>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <div class="ui slider checkbox">
-                <input type="checkbox" name="newsletter" checked="checked">
+                <input type="checkbox" name="managerStatus" checked="checked">
                 <label>房管</label>
             </div>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <div class="ui slider checkbox">
-                <input type="checkbox" name="newsletter">
-                <label>勋章</label>
-            </div>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <div class="ui slider checkbox">
-                <input type="checkbox" name="newsletter">
-                <label>等级</label>
-            </div>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <div class="ui slider checkbox">
-                <input type="checkbox" name="newsletter">
-                <label>勋章屏蔽</label>
-            </div>
+<!--            <div class="ui slider checkbox">-->
+<!--                <input type="checkbox" name="newsletter">-->
+<!--                <label>勋章</label>-->
+<!--            </div>-->
+<!--            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
+<!--            <div class="ui slider checkbox">-->
+<!--                <input type="checkbox" name="newsletter">-->
+<!--                <label>等级</label>-->
+<!--            </div>-->
+<!--            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
+<!--            <div class="ui slider checkbox">-->
+<!--                <input type="checkbox" name="newsletter">-->
+<!--                <label>勋章屏蔽</label>-->
+<!--            </div>-->
         </div>
-        <div class="ui  segment">
+        <div class="ui  segment giftSettingSegment ">
             <h3>礼物显示</h3>
             <div class="ui slider checkbox">
-                <input type="checkbox" name="newsletter" checked="checked">
-                <label>礼物</label>
+                <input type="checkbox" name="giftStatus" checked="checked">
+                <label>所有</label>
             </div>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <div class="ui slider checkbox">
-                <input type="checkbox" name="newsletter" checked="checked">
-                <label>免费</label>
+                <input type="checkbox" name="normalGiftStatus" checked="checked">
+                <label>普通</label>
+            </div>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <div class="ui slider checkbox">
+                <input type="checkbox" name="scGiftStatus" checked="checked">
+                <label>SC</label>
             </div>
         </div>
-        <div class="ui  segment">
+        <div class="ui  segment otherDanmuSettingSegment">
             <h3>其他</h3>
             <div class="ui slider checkbox">
-                <input type="checkbox" name="newsletter" checked="checked">
+                <input type="checkbox" name="danmuLogStatus" checked="checked">
                 <label>弹幕记录</label>
             </div>
         </div>
     </div>
 
     <span>
-                <span class="ui yellow color header">ChatGPT设置</span>
-                <button class="circular ui icon button">保存</button>
-                <button class="circular ui icon button">应用</button>
-                <button class="circular ui icon button">删除所有性格</button>
-            </span>
+        <span class="ui yellow color header">ChatGPT设置</span>
+        <button class="circular ui icon button chatGPTSettingUsingButton">应用</button>
+        <button class="circular ui icon button">删除所有性格</button>
+    </span>
     <div class="ui segments">
 
         <div class="ui yellow segment">

@@ -1,5 +1,6 @@
 package top.nino.core.websocket.parse;
 
+import org.apache.commons.lang3.StringUtils;
 import top.nino.api.model.danmu.DanmuMessage;
 
 /**
@@ -8,6 +9,25 @@ import top.nino.api.model.danmu.DanmuMessage;
  */
 public class ParseDanmuUserRoleUtils {
 
+
+    /**
+     * 判断是不是普通弹幕
+     *
+     * @param danmuMessage 弹幕对象
+     * @return 类型字符串
+     */
+    public static boolean judgeNormal(Long anchorUid, DanmuMessage danmuMessage) {
+        if(StringUtils.isNotBlank(parseGuard(danmuMessage))) {
+            return false;
+        }
+        if(StringUtils.isNotBlank(parseVip(danmuMessage))) {
+            return false;
+        }
+        if(StringUtils.isNotBlank(parseManager(anchorUid, danmuMessage))) {
+            return false;
+        }
+        return true;
+    }
 
 
     /**
@@ -23,6 +43,19 @@ public class ParseDanmuUserRoleUtils {
             return "";
         }
 
+    }
+
+    /**
+     * 判断是不是老爷
+     *
+     * @param danmuMessage 弹幕对象
+     * @return 类型字符串
+     */
+    public static boolean judgeVip(DanmuMessage danmuMessage) {
+        if(StringUtils.isNotBlank(parseVip(danmuMessage))) {
+            return true;
+        }
+        return false;
     }
 
 
@@ -48,6 +81,18 @@ public class ParseDanmuUserRoleUtils {
         }
     }
 
+    /**
+     * 判断是不是舰长
+     *
+     * @param danmuMessage 弹幕对象
+     * @return 类型字符串
+     */
+    public static boolean judgeGuard(DanmuMessage danmuMessage) {
+        if(StringUtils.isNotBlank(parseGuard(danmuMessage))) {
+            return true;
+        }
+        return false;
+    }
 
     /**
      * 判断是否为房管 1 yes  当 uid相同时即是主播
@@ -66,6 +111,18 @@ public class ParseDanmuUserRoleUtils {
         return "";
     }
 
+    /**
+     * 判断是不是房管或者主播
+     *
+     * @param danmuMessage 弹幕对象
+     * @return 类型字符串
+     */
+    public static boolean judgeManager(Long anchorUid, DanmuMessage danmuMessage) {
+        if(StringUtils.isNotBlank(parseManager(anchorUid, danmuMessage))) {
+            return true;
+        }
+        return false;
+    }
 
     /**
      * 解析用户等级

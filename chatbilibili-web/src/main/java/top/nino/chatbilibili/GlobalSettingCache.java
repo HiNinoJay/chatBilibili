@@ -3,18 +3,16 @@ package top.nino.chatbilibili;
 import lombok.ToString;
 import org.springframework.context.annotation.Configuration;
 import top.nino.api.model.user.UserCookieInfo;
-import top.nino.api.model.danmu.Gift;
 import top.nino.api.model.enums.LiveStatusEnum;
 import top.nino.api.model.room.AnchorMedalInfo;
 import top.nino.api.model.user.User;
 import top.nino.api.model.user.UserManager;
 import top.nino.api.model.user_in_room_barrageMsg.UserBarrageMsg;
+import top.nino.api.model.vo.setting.DanmuSettingStatusReqVo;
 import top.nino.chatbilibili.client.BilibiliWebSocketProxy;
 import top.nino.chatbilibili.thread.*;
 
-import java.util.Map;
 import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -203,4 +201,11 @@ public class GlobalSettingCache {
 	}
 
 
+	public static void loadDanmuUsing(DanmuSettingStatusReqVo danmuSettingStatusReqVo) {
+		GlobalSettingCache.ALL_SETTING_CONF.setDanmuStatus(danmuSettingStatusReqVo.isDanmuStatus());
+		GlobalSettingCache.ALL_SETTING_CONF.setNormalDanmuStatus(danmuSettingStatusReqVo.isNormalStatus());
+		GlobalSettingCache.ALL_SETTING_CONF.setGuardDanmuStatus(danmuSettingStatusReqVo.isGuardStatus());
+		GlobalSettingCache.ALL_SETTING_CONF.setVipDanmuStatus(danmuSettingStatusReqVo.isVipStatus());
+		GlobalSettingCache.ALL_SETTING_CONF.setManagerDanmuStatus(danmuSettingStatusReqVo.isManagerStatus());
+	}
 }

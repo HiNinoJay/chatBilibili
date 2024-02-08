@@ -68,7 +68,7 @@ public class ParseDanmuMessageThread extends Thread {
                 // 弹幕
                 case "DANMU_MSG":
 
-                    if(!GlobalSettingCache.ALL_SETTING_CONF.is_barrage()) {
+                    if(!GlobalSettingCache.ALL_SETTING_CONF.isDanmuStatus()) {
                         break;
                     }
 
@@ -81,6 +81,25 @@ public class ParseDanmuMessageThread extends Thread {
                     }
 
                     if(danmuMessage.getMsg_type() != 0) {
+                        break;
+                    }
+
+                    if(!GlobalSettingCache.ALL_SETTING_CONF.isNormalDanmuStatus() && ParseDanmuUserRoleUtils.judgeNormal(GlobalSettingCache.ANCHOR_UID, danmuMessage)) {
+                        break;
+                    }
+
+                    // 老爷
+                    if(!GlobalSettingCache.ALL_SETTING_CONF.isVipDanmuStatus() && ParseDanmuUserRoleUtils.judgeVip(danmuMessage)) {
+                        break;
+                    }
+
+                    // 舰长
+                    if(!GlobalSettingCache.ALL_SETTING_CONF.isGuardDanmuStatus() && ParseDanmuUserRoleUtils.judgeGuard(danmuMessage)) {
+                        break;
+                    }
+
+                    // 房管
+                    if(!GlobalSettingCache.ALL_SETTING_CONF.isManagerDanmuStatus() && ParseDanmuUserRoleUtils.judgeManager(GlobalSettingCache.ANCHOR_UID, danmuMessage)) {
                         break;
                     }
 
@@ -115,13 +134,15 @@ public class ParseDanmuMessageThread extends Thread {
                         danmuResultString.append(":收到弹幕:");
                     }
 
-                    // 老爷
+
                     if (GlobalSettingCache.ALL_SETTING_CONF.is_barrage_vip()) {
                         danmuResultString.append(ParseDanmuUserRoleUtils.parseVip(danmuMessage));
                     } else {
                         danmuUserRoleInfo.setVip((short) 0);
                         danmuUserRoleInfo.setSvip((short) 0);
                     }
+
+
 
                     // 舰长
                     if (GlobalSettingCache.ALL_SETTING_CONF.is_barrage_guard()) {
@@ -165,11 +186,11 @@ public class ParseDanmuMessageThread extends Thread {
 
                 // 送普通礼物
                 case "SEND_GIFT":
-                    if(!GlobalSettingCache.ALL_SETTING_CONF.is_gift()) {
+                    if(!GlobalSettingCache.ALL_SETTING_CONF.isGiftStatus()) {
                         break;
                     }
 
-                    if(!GlobalSettingCache.ALL_SETTING_CONF.is_gift_free()) {
+                    if(!GlobalSettingCache.ALL_SETTING_CONF.isFreeGiftStatus()) {
                         break;
                     }
 
@@ -191,7 +212,11 @@ public class ParseDanmuMessageThread extends Thread {
                     break;
                 // 上舰
                 case "GUARD_BUY":
-                    if(!GlobalSettingCache.ALL_SETTING_CONF.is_gift()) {
+                    if(!GlobalSettingCache.ALL_SETTING_CONF.isGiftStatus()) {
+                        break;
+                    }
+
+                    if(!GlobalSettingCache.ALL_SETTING_CONF.isGuardBuyGiftStatus()) {
                         break;
                     }
 
@@ -203,7 +228,11 @@ public class ParseDanmuMessageThread extends Thread {
 
                 // 醒目留言
                 case "SUPER_CHAT_MESSAGE":
-                    if(!GlobalSettingCache.ALL_SETTING_CONF.is_gift()) {
+                    if(!GlobalSettingCache.ALL_SETTING_CONF.isGiftStatus()) {
+                        break;
+                    }
+
+                    if(!GlobalSettingCache.ALL_SETTING_CONF.isScGiftStatus()) {
                         break;
                     }
 
@@ -251,7 +280,7 @@ public class ParseDanmuMessageThread extends Thread {
                     break;
 
                 case "POPULARITY_RED_POCKET_NEW":
-                    if(!GlobalSettingCache.ALL_SETTING_CONF.is_gift()) {
+                    if(!GlobalSettingCache.ALL_SETTING_CONF.isGiftStatus()) {
                         break;
                     }
                     RedPackage redPackage = JSONObject.parseObject(messageJsonObject.getString("data"), RedPackage.class);

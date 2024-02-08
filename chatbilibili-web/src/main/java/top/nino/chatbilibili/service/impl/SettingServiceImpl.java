@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import top.nino.api.model.vo.setting.DanmuSettingStatusReqVo;
 import top.nino.chatbilibili.GlobalSettingCache;
 import top.nino.chatbilibili.service.GlobalSettingFileService;
 import top.nino.chatbilibili.service.SettingService;
@@ -68,4 +69,20 @@ public class SettingServiceImpl implements SettingService {
         }
     }
 
+
+    public void loadCacheDanmuSettingByVo(DanmuSettingStatusReqVo danmuSettingStatusReqVo) {
+        synchronized (GlobalSettingCache.ALL_SETTING_CONF) {
+            GlobalSettingCache.ALL_SETTING_CONF.setDanmuStatus(danmuSettingStatusReqVo.isDanmuStatus());
+            GlobalSettingCache.ALL_SETTING_CONF.setNormalDanmuStatus(danmuSettingStatusReqVo.isNormalStatus());
+            GlobalSettingCache.ALL_SETTING_CONF.setGuardDanmuStatus(danmuSettingStatusReqVo.isGuardStatus());
+            GlobalSettingCache.ALL_SETTING_CONF.setVipDanmuStatus(danmuSettingStatusReqVo.isVipStatus());
+            GlobalSettingCache.ALL_SETTING_CONF.setManagerDanmuStatus(danmuSettingStatusReqVo.isManagerStatus());
+
+            GlobalSettingCache.ALL_SETTING_CONF.setGiftStatus(danmuSettingStatusReqVo.isGiftStatus());
+            GlobalSettingCache.ALL_SETTING_CONF.setFreeGiftStatus(danmuSettingStatusReqVo.isNormalGiftStatus());
+            GlobalSettingCache.ALL_SETTING_CONF.setScGiftStatus(danmuSettingStatusReqVo.isScGiftStatus());
+
+        }
+
+    }
 }
