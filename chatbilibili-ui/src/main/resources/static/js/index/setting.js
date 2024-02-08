@@ -36,7 +36,6 @@ $(document).on('click', '.chatGPTCharacterMenu .item', function (e) {
 
 
 $(document).on('click', '.oneStepAllSettingUsingButton', function (e) {
-
         // 创建一个复选框状态对象
         var checkboxStatus = {
             danmuStatus: $(".danmuSettingSegment input[name='danmuStatus']").prop('checked'),
@@ -60,9 +59,9 @@ $(document).on('click', '.oneStepAllSettingUsingButton', function (e) {
             data: JSON.stringify(checkboxStatus),
             success: function(response) {
                 if(response.code == "200") {
-                    alert("应用成功。")
+                    alert("弹幕配置应用成功。")
                 } else {
-                    alert("应用失败。")
+                    alert("弹幕配置应用失败。")
                 }
             },
             error: function(xhr, status, error) {
@@ -70,6 +69,34 @@ $(document).on('click', '.oneStepAllSettingUsingButton', function (e) {
                 console.error('发送复选框状态到后端失败:', error);
             }
         });
+
+        // 获取 aiReplyStatus 复选框的状态
+        var aiReplyStatus = $(".aiReplyForm input[name='aiReplyStatus']").prop('checked');
+
+        // 获取被选中的单选按钮的name属性值
+        var aiReplyNum = $(".aiReplyForm input[type='radio']:checked").attr('name');
+
+        // 发送 AJAX 请求到后端
+        $.ajax({
+            url: './rest/setting/chatGPTUsing',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ aiCharacterName : aiCharacterName, aiReplyStatus: aiReplyStatus, aiReplyNum: aiReplyNum }),
+            success: function(response) {
+                if(response.code == "200") {
+                    alert("chatGPT连接正常。")
+                } else if(response.code == "50000"){
+                    alert("未连接到chatGPT服务器。")
+                } else {
+                    alert("chatGPT连接异常。")
+                }
+            },
+            error: function(xhr, status, error) {
+                // 请求失败后的处理
+                console.error('发送数据到后端失败:', error);
+            }
+        });
+
 
 });
 
@@ -109,6 +136,8 @@ $(document).on('click', '.danmuSettingUsingButton', function (e) {
         }
     });
 
+
+
 });
 
 
@@ -129,8 +158,10 @@ $(document).on('click', '.chatGPTSettingUsingButton', function (e) {
         success: function(response) {
             if(response.code == "200") {
                 alert("应用成功。")
+            } else if(response.code == "50000"){
+                alert("未连接到chatGPT服务器。")
             } else {
-                alert("应用失败。")
+                alert("chatGPT连接异常。")
             }
         },
         error: function(xhr, status, error) {

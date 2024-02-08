@@ -72,8 +72,12 @@ public class ChatGPTServiceImpl implements ChatGPTService {
 
     @Override
     public Boolean checkChatGPTStatus() {
-
-        return false;
+        try {
+            chatCompletions("你好");
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     @Override
