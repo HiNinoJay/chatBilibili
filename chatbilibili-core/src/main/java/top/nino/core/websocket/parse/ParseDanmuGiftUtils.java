@@ -1,6 +1,7 @@
 package top.nino.core.websocket.parse;
 
 
+import org.apache.commons.lang3.StringUtils;
 import top.nino.api.model.danmu.Gift;
 import top.nino.core.time.JodaTimeUtils;
 
@@ -23,5 +24,26 @@ public class ParseDanmuGiftUtils {
         stringBuilder.append(" x ");
         stringBuilder.append(normalGift.getNum());
         return stringBuilder.toString();
+    }
+
+    /**
+     * 过滤金银瓜子类型
+     *
+     * @param coin_type
+     * @return
+     */
+    public static short parseCoinType(String coin_type) {
+        if (StringUtils.isBlank(coin_type)) {
+            return -1;
+        }
+        switch (coin_type.trim()) {
+            case "silver":
+                return 0;
+            case "gold":
+                return 1;
+            default:
+                return -1;
+        }
+
     }
 }

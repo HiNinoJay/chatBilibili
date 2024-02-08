@@ -170,15 +170,6 @@ public class GlobalSettingCache {
 	public final static Vector<String> barrageString = new Vector<String>();
 
 
-	//用户在线线程集
-	public static HeartBeatThread heartBeatThread;
-
-	public static HeartBeatsThread heartBeatsThread;
-
-	public static UserOnlineHeartThread userOnlineHeartThread;
-
-	//小心心线程
-	public static SmallHeartThread smallHeartThread;
 
 	public static String SMALLHEART_ADRESS = null;
 

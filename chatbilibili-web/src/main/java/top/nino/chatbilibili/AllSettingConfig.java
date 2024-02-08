@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
 
 import top.nino.api.model.tools.FastJsonUtils;
-import top.nino.api.model.vo.AiCharacter;
+import top.nino.api.model.vo.ai.AiCharacterReqVo;
 import top.nino.core.data.BASE64Utils;
 
 import java.io.IOException;
@@ -112,7 +112,7 @@ public class AllSettingConfig implements Serializable {
     public String usingAiCharacterName;
 
     @JSONField(name = "aiCharacterList")
-    private List<AiCharacter> aiCharacterList = new ArrayList<>();
+    private List<AiCharacterReqVo> aiCharacterReqVoList = new ArrayList<>();
 
     @JSONField(name = "aiReplyStatus")
     private Boolean aiReplyStatus = false;

@@ -1,7 +1,7 @@
 package top.nino.api.model.vo;
 
 import lombok.Data;
-import top.nino.api.model.enums.ResponseCode;
+import top.nino.api.model.enums.ResponseCodeEnum;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
@@ -30,7 +30,7 @@ public class Response<T> {
 		this.timestamp = timestamp;
 	}
 
-	public Response(ResponseCode code, Object result, Timestamp timestamp) {
+	public Response(ResponseCodeEnum code, Object result, Timestamp timestamp) {
 		super();
 		this.code = code.getCode();
 		this.msg = code.getCnMsg();
@@ -39,30 +39,28 @@ public class Response<T> {
 	}
 
 
-	@SuppressWarnings("rawtypes")
 	public static Response success(Object result, HttpServletRequest request) {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Calendar calendar = Calendar.getInstance();
 		String times = dateFormat.format(calendar.getTime());
 		Timestamp timestamp = Timestamp.valueOf(times.toString());
-		return new Response(ResponseCode.SUCCESS, result, timestamp);
+		return new Response(ResponseCodeEnum.SUCCESS, result, timestamp);
 	}
 
-	@SuppressWarnings("rawtypes")
 	public static Response error(HttpServletRequest request) {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Calendar calendar = Calendar.getInstance();
 		String times = dateFormat.format(calendar.getTime());
 		Timestamp timestamp = Timestamp.valueOf(times.toString());
-		return new Response(ResponseCode.SYSTEM_ERROR,"",timestamp);
+		return new Response(ResponseCodeEnum.SYSTEM_ERROR,"",timestamp);
 	}
 
-	public static Response error(ResponseCode responseCode, HttpServletRequest request) {
+	public static Response error(ResponseCodeEnum responseCodeEnum, HttpServletRequest request) {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Calendar calendar = Calendar.getInstance();
 		String times = dateFormat.format(calendar.getTime());
 		Timestamp timestamp = Timestamp.valueOf(times.toString());
-		return new Response(responseCode,"",timestamp);
+		return new Response(responseCodeEnum,"",timestamp);
 	}
 
 }

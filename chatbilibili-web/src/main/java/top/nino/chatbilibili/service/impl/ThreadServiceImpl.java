@@ -24,20 +24,6 @@ public class ThreadServiceImpl implements ThreadService {
 		closeParseMessageThread();
 	}
 
-
-	// 关闭用户相关线程
-	@Override
-	public void closeByUserLogOut(){
-		// 关闭日志线程
-		closeLogThread();
-		// 关闭心跳检测线程
-		closeHeartByteThread();
-		// 关闭解析弹幕线程
-		closeParseMessageThread();
-		GlobalSettingCache.bilibiliWebSocketProxy.close();
-		log.info("关闭 websocket 及其 相关线程成功");
-	}
-
 	/**
 	 * 开启弹幕处理线程
 	 *
@@ -78,84 +64,6 @@ public class ThreadServiceImpl implements ThreadService {
 		}
 	}
 
-
-	@Override
-	public boolean startUserOnlineThread() {
-		if (GlobalSettingCache.heartBeatThread != null || GlobalSettingCache.heartBeatsThread != null
-				|| GlobalSettingCache.userOnlineHeartThread != null) {
-			return false;
-		}
-		GlobalSettingCache.heartBeatThread = new HeartBeatThread();
-		GlobalSettingCache.heartBeatThread.FLAG = false;
-		GlobalSettingCache.heartBeatThread.start();
-
-		GlobalSettingCache.heartBeatsThread = new HeartBeatsThread();
-		GlobalSettingCache.heartBeatsThread.FLAG = false;
-		GlobalSettingCache.heartBeatsThread.start();
-
-		GlobalSettingCache.userOnlineHeartThread = new UserOnlineHeartThread();
-		GlobalSettingCache.userOnlineHeartThread.FLAG = false;
-		GlobalSettingCache.userOnlineHeartThread.start();
-
-		if (GlobalSettingCache.heartBeatThread != null && GlobalSettingCache.heartBeatsThread != null
-				&& GlobalSettingCache.userOnlineHeartThread != null
-				&& !GlobalSettingCache.heartBeatThread.getState().toString().equals("TERMINATED")
-				&& !GlobalSettingCache.heartBeatsThread.getState().toString().equals("TERMINATED")
-				&& !GlobalSettingCache.userOnlineHeartThread.getState().toString().equals("TERMINATED")) {
-			return true;
-		} else {
-			closeUserOnlineThread();
-		}
-		return false;
-	}
-
-	@Override
-	public boolean startSmallHeartThread() {
-		if (GlobalSettingCache.smallHeartThread != null
-				&& !GlobalSettingCache.smallHeartThread.getState().toString().equals("TERMINATED")) {
-			return false;
-		}
-		if(null== GlobalSettingCache.userOnlineHeartThread) {
-			return false;
-		}
-
-		GlobalSettingCache.smallHeartThread = new SmallHeartThread();
-		GlobalSettingCache.smallHeartThread.FLAG = false;
-		GlobalSettingCache.smallHeartThread.start();
-		if (GlobalSettingCache.smallHeartThread != null
-				&& !GlobalSettingCache.smallHeartThread.getState().toString().equals("TERMINATED")) {
-			return true;
-		}
-		return false;
-	}
-
-	public boolean startGiftShieldThread(String giftName, int time) {
-
-		return false;
-	}
-
-	@Override
-	public boolean startFollowShieldThread(int time) {
-
-		return false;
-	}
-
-	public boolean startWelcomeShieldThread(int time) {
-
-		return false;
-	}
-
-	@Override
-	public void closeUserOnlineThread() {
-	}
-
-	@Override
-	public void setParseMessageThread(AllSettingConfig allSettingConfig) {
-		if (GlobalSettingCache.parseDanmuMessageThread != null) {
-
-		}
-	}
-
 	@Override
 	public void closeParseMessageThread() {
 		if (GlobalSettingCache.parseDanmuMessageThread != null) {
@@ -181,11 +89,6 @@ public class ThreadServiceImpl implements ThreadService {
 			GlobalSettingCache.logThread.interrupt();
 			GlobalSettingCache.logThread = null;
 		}
-	}
-
-	@Override
-	public void closeSmallHeartThread() {
-
 	}
 
 }

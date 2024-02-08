@@ -8,7 +8,7 @@ import okhttp3.Response;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import top.nino.api.model.danmu.RoomInfo;
-import top.nino.api.model.enums.ResponseCode;
+import top.nino.api.model.enums.ResponseCodeEnum;
 import top.nino.api.model.http.HttpBibilibiliUrl;
 import top.nino.api.model.http.HttpHeader;
 import top.nino.api.model.login.QrCodeInfo;
@@ -245,8 +245,8 @@ public class HttpBilibiliServer {
     public static top.nino.api.model.vo.Response httpCheckQrcodeScanStatus(String qrCodeKey) {
 
         top.nino.api.model.vo.Response myResponse = new top.nino.api.model.vo.Response();
-        myResponse.setCode(ResponseCode.NONE_QRCODE_KEY_INFO.getCode());
-        myResponse.setMsg(ResponseCode.NONE_QRCODE_KEY_INFO.getMsg());
+        myResponse.setCode(ResponseCodeEnum.NONE_QRCODE_KEY_INFO.getCode());
+        myResponse.setMsg(ResponseCodeEnum.NONE_QRCODE_KEY_INFO.getMsg());
 
         if (StringUtils.isBlank(qrCodeKey)) {
             return myResponse;
@@ -279,36 +279,36 @@ public class HttpBilibiliServer {
                     cookieValue.append(cookie).append(";");
                 });
                 cookieValue.setLength(cookieValue.length() - 1);
-                myResponse.setCode(ResponseCode.SUCCESS.getCode());
-                myResponse.setMsg(ResponseCode.SUCCESS.getMsg());
+                myResponse.setCode(ResponseCodeEnum.SUCCESS.getCode());
+                myResponse.setMsg(ResponseCodeEnum.SUCCESS.getMsg());
                 myResponse.setResult(cookieValue.toString());
                 return myResponse;
             }
 
             if (JSONObject.parseObject(responseData).getJSONObject("data").getIntValue("code") == 86038) {
-                myResponse.setCode(ResponseCode.QRCODE_UN_VALID_INFO.getCode());
-                myResponse.setMsg(ResponseCode.QRCODE_UN_VALID_INFO.getMsg());
+                myResponse.setCode(ResponseCodeEnum.QRCODE_UN_VALID_INFO.getCode());
+                myResponse.setMsg(ResponseCodeEnum.QRCODE_UN_VALID_INFO.getMsg());
                 return myResponse;
 
             }
 
             if (JSONObject.parseObject(responseData).getJSONObject("data").getIntValue("code") == 86101) {
-                myResponse.setCode(ResponseCode.QRCODE_NO_SCAN_INFO.getCode());
-                myResponse.setMsg(ResponseCode.QRCODE_NO_SCAN_INFO.getMsg());
+                myResponse.setCode(ResponseCodeEnum.QRCODE_NO_SCAN_INFO.getCode());
+                myResponse.setMsg(ResponseCodeEnum.QRCODE_NO_SCAN_INFO.getMsg());
                 return myResponse;
 
             }
 
             if (JSONObject.parseObject(responseData).getJSONObject("data").getIntValue("code") == 86090) {
-                myResponse.setCode(ResponseCode.QRCODE_NO_SECOND_CHECK_INFO.getCode());
-                myResponse.setMsg(ResponseCode.QRCODE_NO_SECOND_CHECK_INFO.getMsg());
+                myResponse.setCode(ResponseCodeEnum.QRCODE_NO_SECOND_CHECK_INFO.getCode());
+                myResponse.setMsg(ResponseCodeEnum.QRCODE_NO_SECOND_CHECK_INFO.getMsg());
                 return myResponse;
             }
         } catch (Exception e) {
             log.error(String.valueOf(e));
         }
-        myResponse.setCode(ResponseCode.QRCODE_UN_KNOW_INFO.getCode());
-        myResponse.setMsg(ResponseCode.QRCODE_UN_KNOW_INFO.getMsg());
+        myResponse.setCode(ResponseCodeEnum.QRCODE_UN_KNOW_INFO.getCode());
+        myResponse.setMsg(ResponseCodeEnum.QRCODE_UN_KNOW_INFO.getMsg());
         return myResponse;
     }
 

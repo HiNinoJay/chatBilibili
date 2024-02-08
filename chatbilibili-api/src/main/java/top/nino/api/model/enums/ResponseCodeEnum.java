@@ -9,7 +9,7 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 @Getter
-public enum ResponseCode {
+public enum ResponseCodeEnum {
 	SUCCESS("200", "成功", "成功"),
 	SYSTEM_ERROR("400", "System is busy!", "系统繁忙"),
 

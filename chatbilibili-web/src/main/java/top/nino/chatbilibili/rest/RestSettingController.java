@@ -4,8 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import top.nino.api.model.enums.ResponseCode;
-import top.nino.api.model.vo.AiCharacter;
+import top.nino.api.model.enums.ResponseCodeEnum;
+import top.nino.api.model.vo.ai.AiCharacterReqVo;
 import top.nino.api.model.vo.setting.ChatGPTSettingReqVo;
 import top.nino.api.model.vo.setting.DanmuSettingStatusReqVo;
 import top.nino.api.model.vo.Response;
@@ -44,7 +44,7 @@ public class RestSettingController {
     @PostMapping(value = "/chatGPTUsing")
     public Response<?> chatGPTUsing(HttpServletRequest req, @RequestBody ChatGPTSettingReqVo chatGPTSettingReqVo) {
         if(!chatGPTService.checkChatGPTStatus()) {
-            return Response.error(ResponseCode.AI_ERROR, req);
+            return Response.error(ResponseCodeEnum.AI_ERROR, req);
         }
         settingService.loadCacheChatGPTSettingByVo(chatGPTSettingReqVo);
         settingService.writeAndReadSetting();
@@ -53,11 +53,11 @@ public class RestSettingController {
 
     @ResponseBody
     @PostMapping(value = "/addAiCharacter")
-    public Response<?> addAiCharacter(HttpServletRequest req, @RequestBody AiCharacter aiCharacter) {
+    public Response<?> addAiCharacter(HttpServletRequest req, @RequestBody AiCharacterReqVo aiCharacterReqVo) {
         if(!chatGPTService.checkChatGPTStatus()) {
-            return Response.error(ResponseCode.AI_ERROR, req);
+            return Response.error(ResponseCodeEnum.AI_ERROR, req);
         }
-        GlobalSettingCache.ALL_SETTING_CONF.getAiCharacterList().add(aiCharacter);
+        GlobalSettingCache.ALL_SETTING_CONF.getAiCharacterReqVoList().add(aiCharacterReqVo);
         settingService.writeAndReadSetting();
         return Response.success(true, req);
     }

@@ -1,11 +1,11 @@
-package top.nino.api.model.vo;
+package top.nino.api.model.vo.ai;
 
 import lombok.Data;
 
 import java.util.List;
 
 /**
- * @author : zengzhongjie
+ * @author : nino
  * @date : 2024/2/3 01:41
  */
 @Data

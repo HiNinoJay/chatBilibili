@@ -1,13 +1,11 @@
 package top.nino.chatbilibili.rest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import top.nino.api.model.enums.ResponseCode;
+import top.nino.api.model.enums.ResponseCodeEnum;
 import top.nino.api.model.login.QrCodeInfo;
 import top.nino.api.model.user.User;
-import top.nino.api.model.user.UserCookieInfo;
 import top.nino.api.model.vo.Response;
 import top.nino.chatbilibili.GlobalSettingCache;
 import top.nino.chatbilibili.service.ClientService;
@@ -16,7 +14,6 @@ import top.nino.core.http.CookieUtils;
 import top.nino.core.qrcode.QrcodeUtils;
 import top.nino.service.http.HttpBilibiliServer;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -88,12 +85,12 @@ public class RestLoginController {
     public Response<?> loginCheck(HttpServletRequest req) {
         QrCodeInfo qrCodeInfo = (QrCodeInfo) req.getSession().getAttribute("qrcode");
         if(ObjectUtils.isEmpty(qrCodeInfo)) {
-            return Response.error(ResponseCode.NONE_QRCODE_KEY_INFO, req);
+            return Response.error(ResponseCodeEnum.NONE_QRCODE_KEY_INFO, req);
         }
 
         Response response = HttpBilibiliServer.httpCheckQrcodeScanStatus(qrCodeInfo.getQrcode_key());
 
-        if(response.getCode().equals(ResponseCode.SUCCESS.getCode()) && ObjectUtils.isNotEmpty(response.getResult())) {
+        if(response.getCode().equals(ResponseCodeEnum.SUCCESS.getCode()) && ObjectUtils.isNotEmpty(response.getResult())) {
             GlobalSettingCache.COOKIE_VALUE = String.valueOf(response.getResult());
             GlobalSettingCache.USER_COOKIE_INFO = CookieUtils.parseCookie(GlobalSettingCache.COOKIE_VALUE);
             GlobalSettingCache.USER = HttpBilibiliServer.httpGetUserInfo(GlobalSettingCache.COOKIE_VALUE);;

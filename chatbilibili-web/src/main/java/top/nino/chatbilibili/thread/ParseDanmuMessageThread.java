@@ -10,7 +10,6 @@ import top.nino.chatbilibili.GlobalSettingCache;
 import top.nino.api.model.danmu.*;
 import top.nino.api.model.superchat.SuperChat;
 import top.nino.chatbilibili.client.ChatBilibiliWebsocketController;
-import top.nino.chatbilibili.tool.*;
 import top.nino.core.time.JodaTimeUtils;
 import top.nino.core.websocket.DanmuUtils;
 import top.nino.core.websocket.parse.*;
@@ -195,7 +194,7 @@ public class ParseDanmuMessageThread extends Thread {
                     }
 
                     JSONObject giftJsonObject = JSONObject.parseObject(messageJsonObject.getString("data"));
-                    short gift_type = ParseIndentityTools.parseCoin_type(giftJsonObject.getString("coin_type"));
+                    short gift_type = ParseDanmuGiftUtils.parseCoinType(giftJsonObject.getString("coin_type"));
 
                     if(gift_type != 1) {
                         break;
