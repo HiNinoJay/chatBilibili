@@ -49,14 +49,6 @@ public class GlobalSettingCache {
 
 	//------------- 2.运行中加载/缓存的数据-----------开始----------------------
 
-	public static Boolean aiStatus;
-
-	private Boolean aiReplyStatus;
-
-	public static String usingAiCharacterName;
-
-	private Integer aiReplyNum;
-
 	// 设置
 	public static AllSettingConfig ALL_SETTING_CONF;
 

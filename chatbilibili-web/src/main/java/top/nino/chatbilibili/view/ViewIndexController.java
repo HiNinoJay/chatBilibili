@@ -1,5 +1,6 @@
 package top.nino.chatbilibili.view;
 
+import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -43,6 +44,7 @@ public class ViewIndexController {
         if(ObjectUtils.isNotEmpty(GlobalSettingCache.USER)) {
             model.addAttribute("loginUser", GlobalSettingCache.USER);
         }
+        model.addAttribute("allSettingConf", JSON.toJSONString(GlobalSettingCache.ALL_SETTING_CONF));
         boolean haveConnectionFlag = ObjectUtils.isNotEmpty(GlobalSettingCache.bilibiliWebSocketProxy) && GlobalSettingCache.bilibiliWebSocketProxy.isOpen();
         model.addAttribute("haveConnectionFlag", haveConnectionFlag);
         if(haveConnectionFlag) {
@@ -54,6 +56,7 @@ public class ViewIndexController {
     @RequestMapping(value = "/view/loginOut")
     public String loginOut(HttpServletRequest req) {
         req.getSession().removeAttribute("loginUser");
+
         if (StringUtils.isNotBlank(GlobalSettingCache.COOKIE_VALUE)) {
 
             HttpBilibiliServer.loginOut(GlobalSettingCache.COOKIE_VALUE);

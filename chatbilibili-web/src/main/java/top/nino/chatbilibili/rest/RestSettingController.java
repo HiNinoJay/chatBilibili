@@ -46,7 +46,6 @@ public class RestSettingController {
         if(!chatGPTService.checkChatGPTStatus()) {
             return Response.error(ResponseCode.AI_ERROR, req);
         }
-        GlobalSettingCache.usingAiCharacterName = chatGPTSettingReqVo.getAiCharacterName();
         settingService.loadCacheChatGPTSettingByVo(chatGPTSettingReqVo);
         settingService.writeAndReadSetting();
         return Response.success(true, req);

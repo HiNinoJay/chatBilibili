@@ -94,6 +94,7 @@ public class SettingServiceImpl implements SettingService {
         synchronized (GlobalSettingCache.ALL_SETTING_CONF) {
             GlobalSettingCache.ALL_SETTING_CONF.setAiReplyStatus(chatGPTSettingReqVo.getAiReplyStatus());
             GlobalSettingCache.ALL_SETTING_CONF.setAiReplyNum(AiReplyNumEnum.getByMsg(chatGPTSettingReqVo.getAiReplyNum()).getCode());
+            GlobalSettingCache.ALL_SETTING_CONF.setUsingAiCharacterName(chatGPTSettingReqVo.getAiCharacterName());
         }
 
     }

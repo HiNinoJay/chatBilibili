@@ -108,6 +108,9 @@ public class AllSettingConfig implements Serializable {
 
     // ---------3.chatGPT设置---start-----------
 
+    @JSONField(name = "usingAiCharacterName")
+    public String usingAiCharacterName;
+
     @JSONField(name = "aiCharacterList")
     private List<AiCharacter> aiCharacterList = new ArrayList<>();
 
