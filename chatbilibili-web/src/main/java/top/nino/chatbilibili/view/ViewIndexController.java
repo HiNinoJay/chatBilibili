@@ -44,7 +44,7 @@ public class ViewIndexController {
         if(ObjectUtils.isNotEmpty(GlobalSettingCache.USER)) {
             model.addAttribute("loginUser", GlobalSettingCache.USER);
         }
-        model.addAttribute("allSettingConf", JSON.toJSONString(GlobalSettingCache.ALL_SETTING_CONF));
+        model.addAttribute("allSettingVo", GlobalSettingCache.ALL_SETTING_CONF.generateAllSettingVo());
         boolean haveConnectionFlag = ObjectUtils.isNotEmpty(GlobalSettingCache.bilibiliWebSocketProxy) && GlobalSettingCache.bilibiliWebSocketProxy.isOpen();
         model.addAttribute("haveConnectionFlag", haveConnectionFlag);
         if(haveConnectionFlag) {

@@ -2,10 +2,12 @@ package top.nino.chatbilibili.rest;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import top.nino.api.model.enums.ResponseCodeEnum;
 import top.nino.api.model.vo.ai.AiCharacterReqVo;
+import top.nino.api.model.vo.dto.ChatResDto;
 import top.nino.api.model.vo.setting.ChatGPTSettingReqVo;
 import top.nino.api.model.vo.setting.DanmuSettingStatusReqVo;
 import top.nino.api.model.vo.Response;
@@ -57,7 +59,34 @@ public class RestSettingController {
         if(!chatGPTService.checkChatGPTStatus()) {
             return Response.error(ResponseCodeEnum.AI_ERROR, req);
         }
+        if(!GlobalSettingCache.ALL_SETTING_CONF.isNewCharacterName(aiCharacterReqVo.getName())) {
+            return Response.error(ResponseCodeEnum.AI_SAME_ROLE, req);
+        }
         GlobalSettingCache.ALL_SETTING_CONF.getAiCharacterReqVoList().add(aiCharacterReqVo);
+        settingService.writeAndReadSetting();
+        return Response.success(true, req);
+    }
+
+    @ResponseBody
+    @PostMapping(value = "/testHelloChatGPTByDescription")
+    public Response<?> testHelloChatGPTByDescription(@RequestParam(required = true, name = "prompt") String prompt, HttpServletRequest req) {
+        if(!chatGPTService.checkChatGPTStatus()) {
+            return Response.error(ResponseCodeEnum.AI_ERROR, req);
+        }
+        ChatResDto chatResDto = chatGPTService.testHelloChatGPTByDescription(prompt);
+        if(ObjectUtils.isEmpty(chatResDto)) {
+            return Response.error(ResponseCodeEnum.AI_ERROR, req);
+        }
+        return Response.success(chatResDto, req);
+    }
+
+    @ResponseBody
+    @GetMapping(value = "/deleteAllChatGPTCharacter")
+    public Response<?> deleteAllChatGPTCharacter(HttpServletRequest req) {
+        if(!chatGPTService.checkChatGPTStatus()) {
+            return Response.error(ResponseCodeEnum.AI_ERROR, req);
+        }
+        GlobalSettingCache.ALL_SETTING_CONF.getAiCharacterReqVoList().clear();
         settingService.writeAndReadSetting();
         return Response.success(true, req);
     }

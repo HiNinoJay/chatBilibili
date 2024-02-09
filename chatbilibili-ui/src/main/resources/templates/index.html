@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>chatBilibili</title>
+    <link rel="icon" href="../static/favicon.png" th:href="@{/favicon.png}">
     <link href="../static/css/semantic.min.css" th:href="@{/css/semantic.min.css}" rel="stylesheet" type="text/css">
     <script src="../static/js/jquery-3.7.0.min.js" th:src="@{/js/jquery-3.7.0.min.js}"></script>
     <script src="../static/js/semantic.min.js" th:src="@{/js/semantic.min.js}"></script>
@@ -69,16 +70,20 @@
     <div class="header">
         新增角色Prompt
     </div>
+    <br><br>
+    <div class="ui icon input">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="text" placeholder="角色名称" class ="addNewAiCharacterInput">
+    </div>
     <div class="image content">
-        <textarea style="width:100%;height:200px;"></textarea>
+        <textarea class = "addNewAiCharacterTextArea" style="width:100%;height:200px;" placeholder = "比如：如果你是一只猫，用猫的语气回答。（设置成功，之后每一次的请求，都会首先用到这里的描述，去让chatGPT扮演，做出回答。）"></textarea>
     </div>
     <div class="actions">
-        <div class="ui black deny button">
-            取消
+        <div class="ui black deny button testChatGPTHelloButton">
+            测试
         </div>
-        <div class="ui positive right labeled icon button">
-            提交并应用
-            <i class="checkmark icon"></i>
+        <div class="ui positive right labeled icon button addNewAiCharacterButton">
+            新增
         </div>
     </div>
 </div>
@@ -179,20 +184,6 @@
                 <label>房管</label>
             </div>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<!--            <div class="ui slider checkbox">-->
-<!--                <input type="checkbox" name="newsletter">-->
-<!--                <label>勋章</label>-->
-<!--            </div>-->
-<!--            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
-<!--            <div class="ui slider checkbox">-->
-<!--                <input type="checkbox" name="newsletter">-->
-<!--                <label>等级</label>-->
-<!--            </div>-->
-<!--            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-->
-<!--            <div class="ui slider checkbox">-->
-<!--                <input type="checkbox" name="newsletter">-->
-<!--                <label>勋章屏蔽</label>-->
-<!--            </div>-->
         </div>
         <div class="ui  segment giftSettingSegment ">
             <h3>礼物显示</h3>
@@ -226,27 +217,7 @@
         <button class="circular ui icon button deleteAllChatGptCharacterButton">删除所有性格</button>
     </span>
     <div class="ui segments">
-
         <div class="ui yellow segment">
-            <h3>性格选择</h3>
-            <div class="ui grid">
-                <div class="four wide column">
-                    <div class="ui vertical fluid tabular menu chatGPTCharacterMenu">
-                        <a class="item">Bio</a>
-                        <a class="item">Pics</a>
-                        <a class="item">Companies</a>
-                        <a class="item">Links</a>
-                        <a class="item makeNewChatGPTCharacter">自定义</a>
-                    </div>
-                </div>
-                <div class="twelve wide stretched column">
-                    <div class="ui segment chatGPTCharacterContentSegment">
-                        This is an stretched grid column. This segment will always match the tab height
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="ui  segment">
             <h3>回答频率</h3>
 
             <div class="ui form aiReplyForm">
@@ -284,6 +255,25 @@
                 </div>
             </div>
         </div>
+        <div class="ui  segment">
+            <h3>性格选择</h3>
+            <div class="ui grid">
+                <div class="four wide column">
+                    <div class="ui vertical fluid tabular menu chatGPTCharacterMenu">
+<!--                        <a class="item" >Bio</a>-->
+                        <a class="item makeNewChatGPTCharacter">自定义</a>
+                    </div>
+                </div>
+                <div class="twelve wide stretched column">
+                    <div class="ui segment chatGPTCharacterContentSegment">
+                        选择你想要chatGPT扮演的角色并应用配置。
+                        如果没有请点击自定义新增。
+                        设置成功，之后每一次的请求，都会首先用到这里的描述，去让chatGPT扮演，做出回答。
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <br><br><br><br><br><br><br><br><br><br><br><br><br><br>
@@ -296,9 +286,70 @@
 <script src="../static/js/index/setting.js" th:src="@{/js/index/setting.js}"></script>
 
 <script type="text/javascript" th:inline="javascript">
-    var haveConnectionFlag = [[${haveConnectionFlag}]];
+
 
     $(document).ready(function(){
+        console.log("开始载入所有配置。");
+        // 载入所有设置
+        var danmuStatus = [[${allSettingVo.danmuStatus}]];
+        var normalDanmuStatus = [[${allSettingVo.normalDanmuStatus}]];
+        var guardDanmuStatus = [[${allSettingVo.guardDanmuStatus}]];
+        var vipDanmuStatus = [[${allSettingVo.vipDanmuStatus}]];
+        var managerDanmuStatus = [[${allSettingVo.managerDanmuStatus}]];
+
+        var giftStatus = [[${allSettingVo.giftStatus}]];
+        var freeGiftStatus = [[${allSettingVo.freeGiftStatus}]];
+        var guardBuyGiftStatus = [[${allSettingVo.guardBuyGiftStatus}]];
+        var scGiftStatus = [[${allSettingVo.scGiftStatus}]];
+
+        var aiReplyStatus = [[${allSettingVo.aiReplyStatus}]];
+        var aiCharacterReqVoList = [[${allSettingVo.aiCharacterReqVoList}]];
+        var usingAiCharacterName = [[${allSettingVo.usingAiCharacterName}]];
+        var aiReplyNum = [[${allSettingVo.aiReplyNum}]];
+
+
+        var $checkbox = $('.ui.slider.checkbox input[name="danmuStatus"]');
+        $checkbox.prop('checked', danmuStatus);
+        var $checkbox = $('.ui.slider.checkbox input[name="normalStatus"]');
+        $checkbox.prop('checked', normalDanmuStatus);
+        var $checkbox = $('.ui.slider.checkbox input[name="guardStatus"]');
+        $checkbox.prop('checked', guardDanmuStatus);
+        var $checkbox = $('.ui.slider.checkbox input[name="vipStatus"]');
+        $checkbox.prop('checked', vipDanmuStatus);
+        var $checkbox = $('.ui.slider.checkbox input[name="managerStatus"]');
+        $checkbox.prop('checked', managerDanmuStatus);
+
+        var $checkbox = $('.ui.slider.checkbox input[name="giftStatus"]');
+        $checkbox.prop('checked', giftStatus);
+        var $checkbox = $('.ui.slider.checkbox input[name="normalGiftStatus"]');
+        $checkbox.prop('checked', freeGiftStatus);
+        var $checkbox = $('.ui.slider.checkbox input[name="scGiftStatus"]');
+        $checkbox.prop('checked', scGiftStatus);
+
+        var $checkbox = $('.ui.slider.checkbox input[name="aiReplyStatus"]');
+        $checkbox.prop('checked', aiReplyStatus);
+
+        // 遍历数组
+        aiCharacterReqVoList.forEach(function(character) {
+
+            // 创建新的<a>标签元素
+            var $newLink = $('<a>').addClass('item').text(character.name).data('name', character.prompt);
+            if(usingAiCharacterName == character.name) {
+                $newLink.addClass('active');
+                $('.chatGPTCharacterContentSegment').text(character.prompt);
+            }
+            // 将新的<a>标签添加到.menu中
+            $('.chatGPTCharacterMenu').prepend($newLink);
+        });
+
+        // 取消所有单选按钮的选中状态
+        $('.aiReplyForm input[type="radio"]').prop('checked', false);
+
+        // 根据aiReplyNum的值选中对应的单选按钮
+        $('.aiReplyForm input[type="radio"][name="' + aiReplyNum + '"]').prop('checked', true);
+
+        var haveConnectionFlag = [[${haveConnectionFlag}]];
+        // 刷载入上一次的直播间连接
         if(haveConnectionFlag) {
             var inputRoomId = [[${roomId}]];
 

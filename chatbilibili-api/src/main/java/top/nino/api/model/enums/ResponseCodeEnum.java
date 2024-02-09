@@ -14,6 +14,7 @@ public enum ResponseCodeEnum {
 	SYSTEM_ERROR("400", "System is busy!", "系统繁忙"),
 
 	AI_ERROR("50000", "AI连接状态异常", "AI连接状态异常"),
+	AI_SAME_ROLE("50010", "AI相同的角色名称", "AI相同的角色名称"),
 
 	NONE_QRCODE_KEY_INFO("80000", "没有QrKey", "没有QrKey"),
 	QRCODE_UN_VALID_INFO("86038", "二维码失效", "二维码失效"),

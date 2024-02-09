@@ -6,10 +6,13 @@ import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 
+import top.nino.api.model.enums.AiReplyNumEnum;
 import top.nino.api.model.tools.FastJsonUtils;
 import top.nino.api.model.vo.ai.AiCharacterReqVo;
+import top.nino.api.model.vo.setting.AllSettingVo;
 import top.nino.core.data.BASE64Utils;
 
 import java.io.IOException;
@@ -162,5 +165,40 @@ public class AllSettingConfig implements Serializable {
             // 在异常时提供默认对象, 避免反复处理解析失败异常
             return new AllSettingConfig();
         }
+    }
+
+
+    public boolean isNewCharacterName(String name) {
+        if(StringUtils.isBlank(name)) {
+            return false;
+        }
+        for(AiCharacterReqVo aiCharacterReqVo : aiCharacterReqVoList) {
+            if(aiCharacterReqVo.getName().equals(name)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public AllSettingVo generateAllSettingVo() {
+        AllSettingVo allSettingVo = new AllSettingVo();
+        allSettingVo.setLastRoomId(this.roomId);
+
+        allSettingVo.setDanmuStatus(this.danmuStatus);
+        allSettingVo.setNormalDanmuStatus(this.normalDanmuStatus);
+        allSettingVo.setGuardDanmuStatus(this.guardDanmuStatus);
+        allSettingVo.setVipDanmuStatus(this.vipDanmuStatus);
+        allSettingVo.setManagerDanmuStatus(this.managerDanmuStatus);
+
+        allSettingVo.setGiftStatus(this.giftStatus);
+        allSettingVo.setFreeGiftStatus(this.freeGiftStatus);
+        allSettingVo.setGuardBuyGiftStatus(this.guardBuyGiftStatus);
+        allSettingVo.setScGiftStatus(this.scGiftStatus);
+
+        allSettingVo.setAiReplyStatus(this.aiReplyStatus);
+        allSettingVo.setUsingAiCharacterName(this.usingAiCharacterName);
+        allSettingVo.setAiCharacterReqVoList(this.aiCharacterReqVoList);
+        allSettingVo.setAiReplyNum(AiReplyNumEnum.getByCode(aiReplyNum).getMsg());
+        return allSettingVo;
     }
 }

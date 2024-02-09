@@ -31,4 +31,15 @@ public enum AiReplyNumEnum {
         log.info("没有对应的回复频率：{}", msg);
         return AiReplyNumEnum.ZERO;
     }
+
+    public static AiReplyNumEnum getByCode(Integer aiReplyNum) {
+        AiReplyNumEnum[] values = AiReplyNumEnum.values();
+        for(AiReplyNumEnum value : values) {
+            if(value.getCode().equals(aiReplyNum)) {
+                return value;
+            }
+        }
+        log.info("没有对应的回复频率：{}", aiReplyNum);
+        return AiReplyNumEnum.ZERO;
+    }
 }

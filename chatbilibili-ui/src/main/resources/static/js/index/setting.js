@@ -1,5 +1,4 @@
 <!--设置-->
-var pre;
 var aiCharacterName;
 
 $(document).ready(function(){
@@ -17,19 +16,20 @@ $(document).ready(function(){
 $(document).on('click', '.chatGPTCharacterMenu .item', function (e) {
 
 
-
-    if(pre != null) {
-        $(pre).removeClass('active');
-    }
-    console.log($(this).text());
     if($(this).hasClass('makeNewChatGPTCharacter')) {
         $('.ui.setNewChatGPTCharacterModal').modal('show');
     } else {
+        // 取消所有单选按钮的选中状态
+        var $activeLink = $('.chatGPTCharacterMenu').find('a.item.active:first');
+        if($activeLink.length > 0) {
+            $activeLink.removeClass('active');
+        }
+
         $(this).addClass('active');
         $(this).addClass('activeAiCharacter');
         aiCharacterName = $(this).text();
-        $('.chatGPTCharacterContentSegment').text($(this).text());
-        pre = e.currentTarget;
+        var prompt = $(this).data('name');
+        $('.chatGPTCharacterContentSegment').text(prompt);
     }
 
 });
@@ -172,3 +172,113 @@ $(document).on('click', '.chatGPTSettingUsingButton', function (e) {
 
 
 });
+
+
+$(document).on('click', '.testChatGPTHelloButton', function (e) {
+
+    var prompt = $(".addNewAiCharacterTextArea").val();
+
+    // 发送 AJAX 请求到后端
+    $.ajax({
+        url: './rest/setting/testHelloChatGPTByDescription',
+        type: 'POST',
+        dataType: 'json',
+        data: {prompt : prompt},
+        success: function(response) {
+            if(response.code == "200") {
+                console.log(response.result);
+                alert(response.result.answers[0]);
+            } else if(response.code == "50000"){
+                alert("未连接到chatGPT服务器。")
+            } else {
+                alert("chatGPT连接异常。")
+            }
+        },
+        error: function(xhr, status, error) {
+            // 请求失败后的处理
+            console.error('发送数据到后端失败:', error);
+        }
+    });
+
+
+});
+
+
+$(document).on('click', '.addNewAiCharacterButton', function (e) {
+
+    // 获取 aiReplyStatus 复选框的状态
+    var name = $(".addNewAiCharacterInput").val();
+
+    if(name == null || name == "") {
+        alert("请填写角色名称。")
+        return;
+    }
+
+    // 获取被选中的单选按钮的name属性值
+    var prompt = $(".addNewAiCharacterTextArea").val();
+
+
+    if(prompt == null || prompt == "") {
+        alert("请填写角色描述。")
+        return;
+    }
+
+
+    // 发送 AJAX 请求到后端
+    $.ajax({
+        url: './rest/setting/addAiCharacter',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ name : name, prompt: prompt}),
+        success: function(response) {
+            if(response.code == "200") {
+                alert("保存成功。")
+            } else if(response.code == "50000"){
+                alert("未连接到chatGPT服务器。")
+            } else if(response.code == "50010"){
+                alert("重复的角色名称。")
+            } else {
+                alert("chatGPT连接异常。")
+            }
+        },
+        error: function(xhr, status, error) {
+            // 请求失败后的处理
+            console.error('发送数据到后端失败:', error);
+        }
+    });
+
+
+});
+
+
+$(document).on('click', '.deleteAllChatGptCharacterButton', function (e) {
+
+
+    // 发送 AJAX 请求到后端
+    $.ajax({
+        url: './rest/setting/deleteAllChatGPTCharacter',
+        async : false,
+        cache : false,
+        type : 'GET',
+        dataType : 'json',
+        success: function(response) {
+            if(response.code == "200") {
+                alert("清空成功。")
+                window.location.href = "/";
+            } else if(response.code == "50000"){
+                alert("未连接到chatGPT服务器。")
+            } else if(response.code == "50010"){
+                alert("重复的角色名称。")
+            } else {
+                alert("chatGPT连接异常。")
+            }
+        },
+        error: function(xhr, status, error) {
+            // 请求失败后的处理
+            console.error('发送数据到后端失败:', error);
+        }
+    });
+
+
+});
+

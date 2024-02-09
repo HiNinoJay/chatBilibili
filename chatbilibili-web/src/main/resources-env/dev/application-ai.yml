@@ -22,6 +22,7 @@ ai:
 
 # chatgpt
 chatgpt:
+  defaultCharacter: 假如你是一只猫，每次回答都要用猫的语气。
   main: CHAT_GPT_3_5
   conf:
     CHAT_GPT_3_5:

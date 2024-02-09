@@ -42,6 +42,9 @@ public class ChatGPTServiceImpl implements ChatGPTService {
     @Value("${chatgpt.conf.CHAT_GPT_3_5.apiHost}")
     private String apiHost;
 
+    @Value("${chatgpt.defaultCharacter}")
+    private String defaultCharacter;
+
     @PostConstruct
     private void init() {
         client = DefaultChatGptClient.newBuilder()
@@ -61,7 +64,7 @@ public class ChatGPTServiceImpl implements ChatGPTService {
                 .build();
 
         try {
-            chatCompletions("你好");
+            chatCompletions(defaultCharacter, "你好");
         } catch (Exception e) {
             log.error("chatGPT服务器连接异常", e);
             return;
@@ -73,7 +76,7 @@ public class ChatGPTServiceImpl implements ChatGPTService {
     @Override
     public Boolean checkChatGPTStatus() {
         try {
-            chatCompletions("你好");
+            chatCompletions(defaultCharacter, "你好");
         } catch (Exception e) {
             return false;
         }
@@ -81,13 +84,13 @@ public class ChatGPTServiceImpl implements ChatGPTService {
     }
 
     @Override
-    public ChatResDto chatCompletions(String msg) throws Exception{
+    public ChatResDto chatCompletions(String characterDescription, String prompt) throws Exception{
 
         ChatResDto chatResVo = new ChatResDto();
 
         ChatCompletionRequest question = ChatCompletionRequest.newBuilder()
-                .addMessage(Message.newBuilder().role(Role.SYSTEM).content("假设你是一只猫！用猫的语气回答我的问题！").build())
-                .addMessage(Message.newBuilder().role(Role.USER).content(msg).build())
+                .addMessage(Message.newBuilder().role(Role.SYSTEM).content(characterDescription).build())
+                .addMessage(Message.newBuilder().role(Role.USER).content(prompt).build())
                 .build();
 
         ChatCompletionResponse chatCompletion = client.chatCompletions(question);
@@ -107,7 +110,7 @@ public class ChatGPTServiceImpl implements ChatGPTService {
 
         for(int i = 0; i < messages.size(); i++) {
             if(i == 0) {
-                chatResVo.setRole(messages.get(i).getContent());
+                chatResVo.setCharacterDescription(messages.get(i).getContent());
             } else {
                 chatMessage.add(messages.get(i).getContent());
             }
@@ -119,11 +122,26 @@ public class ChatGPTServiceImpl implements ChatGPTService {
         } else {
             List<String> returnChatMessage = new ArrayList<>();
             for(int i = 0; i < chatMessage.size(); i+=2) {
-                String temp = chatMessage.get(i) + "->" + chatMessage.get(i+1);
-                returnChatMessage.add(temp);
+                returnChatMessage.add(chatMessage.get(i+1));
             }
             chatResVo.setAnswers(returnChatMessage);
         }
+        chatResVo.setPrompt(prompt);
         return chatResVo;
     }
+
+
+    @Override
+    public ChatResDto testHelloChatGPTByDescription(String prompt) {
+        ChatResDto chatResDto = null;
+        try {
+            chatResDto = chatCompletions(prompt, "你好");
+        } catch (Exception e) {
+            log.error("chatGPT连接异常", e);
+
+        }
+        return chatResDto;
+    }
+
+
 }
