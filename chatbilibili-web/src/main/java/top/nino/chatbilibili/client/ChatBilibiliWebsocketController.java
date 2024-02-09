@@ -29,7 +29,6 @@ public class ChatBilibiliWebsocketController {
 			synchronized (chatBilibiliWebsocketController.session) {
 				chatBilibiliWebsocketController.session.getBasicRemote().sendText(message);
 			}
-
 		}
 	}
 

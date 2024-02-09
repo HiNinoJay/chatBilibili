@@ -139,20 +139,20 @@ const connectMethod = {
     },
 
     startReceiveDanmu : function() {
-            "use strict";
-            var flag = false;
-            $.ajax({
-                url : './rest/room/startReceiveDanmu',
-                async : false,
-                cache : false,
-                type : 'GET',
-                dataType : 'json',
-                success : function(data) {
-                    if (data.code === "200") {
-                        flag = data.result;
-                    }
+        "use strict";
+        var flag = false;
+        $.ajax({
+            url : './rest/room/startReceiveDanmu',
+            async : false,
+            cache : false,
+            type : 'GET',
+            dataType : 'json',
+            success : function(data) {
+                if (data.code === "200") {
+                    flag = data.result;
                 }
-            });
-            return flag
+            }
+        });
+        return flag
     },
 };
