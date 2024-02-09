@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!-- 基本信息 -->
+    <description>chatBilibili</description>
+    <name>chatBilibili</name>
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
-    <modules>
-        <module>chatbilibili-web</module>
-        <module>chatbilibili-ui</module>
-        <module>chatbilibili-api</module>
-        <module>chatbilibili-core</module>
-        <module>chatbilibili-service</module>
-    </modules>
+
+    <!-- 项目说明：这里作为聚合工程的父工程 -->
+    <groupId>top.nino.chatbilibili</groupId>
+    <artifactId>chatbilibili</artifactId>
+    <version>1.0.0-RELEASE</version>
+
+    <!-- 继承说明：这里继承SpringBoot提供的父工程 -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -17,11 +21,16 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>top.nino.chatbilibili</groupId>
-    <artifactId>chatbilibili</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>chatbilibili</name>
-    <description>chatbilibili</description>
+    <!-- 模块说明：这里声明多个子模块 -->
+    <modules>
+        <module>chatbilibili-web</module>
+        <module>chatbilibili-ui</module>
+        <module>chatbilibili-api</module>
+        <module>chatbilibili-core</module>
+        <module>chatbilibili-service</module>
+    </modules>
+
+
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -29,8 +38,6 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <guava.version>31.1-jre</guava.version>
         <guava.version>31.1-jre</guava.version>
-        <mybaits-plus.version>3.5.2</mybaits-plus.version>
-        <aliyun-sdk-oss.version>3.17.2</aliyun-sdk-oss.version>
         <qrCodeInfo-plugin.version>3.0.0</qrCodeInfo-plugin.version>
         <commons-io.version>2.11.0</commons-io.version>
         <hutool-all.version>5.8.15</hutool-all.version>
@@ -46,28 +53,29 @@
         <jwt.version>4.4.0</jwt.version>
     </properties>
 
+    <!-- 版本说明：这里统一管理依赖的版本号 -->
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>top.nino</groupId>
+                <groupId>top.nino.api</groupId>
                 <artifactId>chatbilibili-api</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
 
             <dependency>
-                <groupId>top.nino</groupId>
+                <groupId>top.nino.core</groupId>
                 <artifactId>chatbilibili-core</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
 
             <dependency>
-                <groupId>top.nino</groupId>
+                <groupId>top.nino.service</groupId>
                 <artifactId>chatbilibili-service</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
 
             <dependency>
-                <groupId>top.nino</groupId>
+                <groupId>top.nino.ui</groupId>
                 <artifactId>chatbilibili-ui</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
@@ -78,17 +86,6 @@
                 <version>${guava.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-boot-starter</artifactId>
-                <version>${mybaits-plus.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.github.liuyueyi.media</groupId>
-                <artifactId>qrCodeInfo-plugin</artifactId>
-                <version>${qrCodeInfo-plugin.version}</version>
-            </dependency>
 
             <dependency>
                 <groupId>commons-io</groupId>
@@ -101,7 +98,6 @@
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool-all.version}</version>
             </dependency>
-
 
 
             <dependency>
