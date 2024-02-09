@@ -122,8 +122,6 @@ public class GlobalSettingCache {
 	// log日志待写入集合
 	public volatile static Vector<String> logList;
 
-
-
 	// 心跳线程
 	public static HeartCheckBilibiliDanmuServerThread heartCheckBilibiliDanmuServerThread;
 
@@ -163,22 +161,14 @@ public class GlobalSettingCache {
 	//心跳包&验证包的尾巴其他
 	public final static int packageOther = 1;
 
-
-
-
 	//待发弹幕集
 	public final static Vector<String> barrageString = new Vector<String>();
-
-
 
 	public static String SMALLHEART_ADRESS = null;
 
 	public static boolean is_sign= false;
 
-
 	public static int manager_login_size=0;
-
-
 
 	public static void init_connect(){
 		GlobalSettingCache.barrageString.clear();
@@ -191,7 +181,6 @@ public class GlobalSettingCache {
 		GlobalSettingCache.ROOM_POPULARITY = 1L;
 	}
 
-
 	public static void loadDanmuUsing(DanmuSettingStatusReqVo danmuSettingStatusReqVo) {
 		GlobalSettingCache.ALL_SETTING_CONF.setDanmuStatus(danmuSettingStatusReqVo.isDanmuStatus());
 		GlobalSettingCache.ALL_SETTING_CONF.setNormalDanmuStatus(danmuSettingStatusReqVo.isNormalStatus());
@@ -199,6 +188,4 @@ public class GlobalSettingCache {
 		GlobalSettingCache.ALL_SETTING_CONF.setVipDanmuStatus(danmuSettingStatusReqVo.isVipStatus());
 		GlobalSettingCache.ALL_SETTING_CONF.setManagerDanmuStatus(danmuSettingStatusReqVo.isManagerStatus());
 	}
-
-
 }

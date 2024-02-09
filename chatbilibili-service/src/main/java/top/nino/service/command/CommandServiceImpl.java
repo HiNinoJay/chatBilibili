@@ -25,8 +25,8 @@ public class CommandServiceImpl implements CommandService{
 
     @Override
     public void startApplication() {
-        log.info(getIpAddressUrl());
-        log.info(getLocalDomainUrl());
+        log.info("网页地址：{}", getIpAddressUrl());
+        log.info("网页地址：{}", getLocalDomainUrl());
         // 默认浏览器打开网页
         try {
             Runtime rt = Runtime.getRuntime();
