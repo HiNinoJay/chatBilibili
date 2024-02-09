@@ -2,18 +2,69 @@ server:
   port: 1999
 
 spring:
-  #开放spring完全循环构造引入
+  thymeleaf:
+    mode: HTML
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+    cache: false
   main:
     allow-circular-references: true
-  #  Spring Boot 2.4为了提升对Kubernetes的支持 将 spring.profiles 作废了
-  #  profiles:
-  #    active: dal,web,config,image
-  # 替换上面作废的spring.profiels.actice配置参数
-  config:
-    import: application-web.yml,application-ai.yml
-  mvc:
-    async:
-      request-timeout:
+
+log:
+  path: logs
+env:
+  name: dev
+
+ai:
+  maxNum:
+    basic: 5 # 默认兜底策略
+    wechat: 10 # 公众号用户
+    star: 100 # 星球用户
+    starTry: 30 # 星球用户
+    invited: 0.1 # 被邀请
+    inviteNum: 0.2 # 邀请人数执行策略
+    starNumber: 4000 # 目前为 4000
+  source: # 支持的AI模型
+    - CHAT_GPT_3_5
+    - CHAT_GPT_4
+    - PAI_AI
+    - XUN_FEI_AI
+
+# chatgpt
+chatgpt:
+  defaultCharacter: 假如你是一只猫，每次回答都要用猫的语气。
+  main: CHAT_GPT_3_5
+  conf:
+    CHAT_GPT_3_5:
+      key:
+      proxyIP: 127.0.0.1 # 表示走上面的代理进行访问
+      proxyPort: 49274
+      apiHost: https://api.openai.com/
+      timeOut: 900
+      maxToken: 3000
+    CHAT_GPT_4:
+      keys:
+        -
+      proxy: true
+      apiHost: https://api.openai.com/
+      timeOut: 900
+      maxToken: 200000
+  number:
+    # 普通用户
+    normal: 50
+    vip: 100
+
+
+
+# 讯飞AI
+xunfei:
+  hostUrl: http://spark-api.xf-yun.com/v2.1/chat
+  domain: "generalv2"
+  appId:
+  apiKey:
+  apiSecret:
+
 
 chatBilibili:
   version: 0.1.0

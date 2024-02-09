@@ -31,18 +31,6 @@ import java.util.Map;
 public class SettingServiceImpl implements SettingService {
 
 
-    @Autowired
-    private ClientService clientService;
-
-    @Autowired
-    private ThreadService threadService;
-
-    @Autowired
-    private GlobalSettingFileService globalSettingFileService;
-
-
-
-
 
     @Override
     public void writeAndReadSetting() {
