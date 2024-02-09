@@ -9,7 +9,7 @@ spring:
       content-type: text/html
     cache: false
   main:
-    allow-circular-references: true
+    allow-circular-references: false
 
 log:
   path: logs
