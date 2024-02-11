@@ -24,11 +24,11 @@ $(document).on('click', '.connectButton', function (e) {
                 $('.roomInfoSegment').empty();
                 var connectRoomInfo  = `<span>` +
                                             "已连接到直播间：" +
-                                           `<a href=`  + "https://live.bilibili.com/" + roomInfo.roomId  + `>` +
+                                           `<a target='_blank' href=`  + "https://live.bilibili.com/" + roomInfo.roomId  + `>` +
                                                                                            roomInfo.roomId +
                                                                                        `</a>` +
                                            "，UP主：" +
-                                            `<a href=`  + "https://space.bilibili.com/" + roomInfo.anchorUid  + `>` +
+                                            `<a target='_blank' href=`  + "https://space.bilibili.com/" + roomInfo.anchorUid  + `>` +
                                                 roomInfo.anchorName +
                                             `</a>` +
                                             "，当前直播状态：" + roomInfo.liveStatus +
