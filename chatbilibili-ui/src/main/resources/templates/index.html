@@ -152,6 +152,39 @@
 
     <br>
 
+    <div class="ui segment">
+        <h3 class="ui dividing header">AI回答记录面板</h3>
+        <div style="overflow-y:scroll; height:300px" class="aiMessageBoardContainer">
+            <div class="ui comments aiMessageBoard">
+<!--                <div class="comment">-->
+<!--                    <div class="content">-->
+<!--                        <a class="author">Elliot Fu</a>-->
+<!--                        <div class="metadata">-->
+<!--                            <span class="date">Yesterday at 12:30AM</span>-->
+<!--                        </div>-->
+<!--                        <div class="text">-->
+<!--                            <p>This has been very useful for my research. Thanks as well!</p>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="comments">-->
+<!--                        <div class="comment">-->
+<!--                            <div class="content">-->
+<!--                                <a class="author">ChatGPT</a>-->
+<!--                                <div class="metadata">-->
+<!--                                    <span class="date">Just now</span>-->
+<!--                                </div>-->
+<!--                                <div class="text">-->
+<!--                                    Elliot you are always so right :)-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+            </div>
+        </div>
+    </div>
+
+    <br>
 
     <span>
         <span class="ui pink color header">弹幕设置</span>
@@ -284,11 +317,13 @@
 <script src="../static/js/index/login.js" th:src="@{/js/index/login.js}"></script>
 <script src="../static/js/index/room.js" th:src="@{/js/index/room.js}"></script>
 <script src="../static/js/index/setting.js" th:src="@{/js/index/setting.js}"></script>
+<script src="../static/js/index/ai.js" th:src="@{/js/index/ai.js}"></script>
 
 <script type="text/javascript" th:inline="javascript">
 
 
     $(document).ready(function(){
+
         console.log("开始载入所有配置。");
         // 载入所有设置
         var danmuStatus = [[${allSettingVo.danmuStatus}]];

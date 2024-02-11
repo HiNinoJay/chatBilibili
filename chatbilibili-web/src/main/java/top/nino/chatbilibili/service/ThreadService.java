@@ -15,15 +15,21 @@ public interface ThreadService {
 	// 关闭处理弹幕包线程 core
 	void closeParseMessageThread();
 
+	void startAIThread();
+
+	// 关闭AI线程
+	void closeAIThread();
+
 	// 开启心跳线程
+
 	void startHeartCheckBilibiliDanmuServerThread();
-
 	// 关闭心跳线程 core
+
 	void closeHeartByteThread();
-
 	// 开启日志线程
-	void startLogThread();
 
+	void startLogThread();
 	// 关闭日志线程
+
 	void closeLogThread();
 }

@@ -11,7 +11,11 @@ import java.util.List;
 @Data
 public class ChatResDto {
 
-    private String characterDescription;
+    private String userName;
+    private String questionTime;
     private String prompt;
+    private String characterName;
+    private String characterDescription;
     private List<String> answers;
+    private String answerTime;
 }

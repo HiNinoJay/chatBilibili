@@ -8,11 +8,13 @@ import top.nino.api.model.room.AnchorMedalInfo;
 import top.nino.api.model.user.User;
 import top.nino.api.model.user.UserManager;
 import top.nino.api.model.user_in_room_barrageMsg.UserBarrageMsg;
+import top.nino.api.model.vo.dto.ChatResDto;
 import top.nino.api.model.vo.setting.DanmuSettingStatusReqVo;
 import top.nino.chatbilibili.client.BilibiliWebSocketProxy;
 import top.nino.chatbilibili.thread.*;
 
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
@@ -106,6 +108,9 @@ public class GlobalSettingCache {
 	// user房间管理信息
 	public static UserManager USER_MANAGER;
 
+	// AI回答频率计数
+	public static AtomicInteger aiQuestionCount;
+
 
 	//------------- 2.运行中加载/缓存的数据-----------结束----------------------
 
@@ -122,11 +127,20 @@ public class GlobalSettingCache {
 	// log日志待写入集合
 	public volatile static Vector<String> logList;
 
+	// AI待回答集合
+	public volatile static Vector<String> aiQuestionList;
+
+	// AI已回答集合
+	public volatile static Vector<ChatResDto> aiAnswerList;
+
 	// 心跳线程
 	public static HeartCheckBilibiliDanmuServerThread heartCheckBilibiliDanmuServerThread;
 
 	// 处理信息分类线程
 	public static ParseDanmuMessageThread parseDanmuMessageThread;
+
+	// AI回答线程
+	public static AIThread aiThread;
 
 	// 日志线程
 	public static LogThread logThread;

@@ -12,10 +12,12 @@ import top.nino.api.model.vo.setting.ChatGPTSettingReqVo;
 import top.nino.api.model.vo.setting.DanmuSettingStatusReqVo;
 import top.nino.api.model.vo.Response;
 import top.nino.chatbilibili.GlobalSettingCache;
+import top.nino.chatbilibili.service.ClientService;
 import top.nino.chatbilibili.service.SettingService;
 import top.nino.service.chatgpt.ChatGPTService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author : nino
@@ -33,6 +35,9 @@ public class RestSettingController {
     @Autowired
     private ChatGPTService chatGPTService;
 
+    @Autowired
+    private ClientService clientService;
+
 
     @ResponseBody
     @PostMapping(value = "/danmuUsing")
@@ -49,7 +54,12 @@ public class RestSettingController {
             return Response.error(ResponseCodeEnum.AI_ERROR, req);
         }
         settingService.loadCacheChatGPTSettingByVo(chatGPTSettingReqVo);
+        GlobalSettingCache.aiQuestionCount = new AtomicInteger(0);
         settingService.writeAndReadSetting();
+
+        if(GlobalSettingCache.ALL_SETTING_CONF.getAiReplyStatus() && GlobalSettingCache.ALL_SETTING_CONF.getAiReplyNum() > 0) {
+            clientService.startAIThread();
+        }
         return Response.success(true, req);
     }
 

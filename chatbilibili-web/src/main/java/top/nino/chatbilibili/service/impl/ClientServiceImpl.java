@@ -16,7 +16,7 @@ import top.nino.chatbilibili.client.BilibiliWebSocketProxy;
 import top.nino.chatbilibili.service.ThreadService;
 import top.nino.chatbilibili.service.ClientService;
 import top.nino.chatbilibili.service.SettingService;
-import top.nino.chatbilibili.client.utils.ParseWebsocketMessageUtils;
+import top.nino.core.websocket.ParseWebsocketMessageUtils;
 import top.nino.core.data.ByteUtils;
 import top.nino.core.websocket.DanmuUtils;
 import top.nino.core.data.HexUtils;
@@ -25,6 +25,7 @@ import top.nino.service.http.HttpBilibiliServer;
 
 import java.util.UUID;
 import java.util.Vector;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author nino
@@ -112,6 +113,9 @@ public class ClientServiceImpl implements ClientService {
 
         GlobalSettingCache.danmuList = new Vector<>(100);
         GlobalSettingCache.logList = new Vector<>(100);
+        GlobalSettingCache.aiQuestionList = new Vector<>(100);
+        GlobalSettingCache.aiAnswerList = new Vector<>(100);
+        GlobalSettingCache.aiQuestionCount = new AtomicInteger(0);
     }
 
     @Override
@@ -171,34 +175,6 @@ public class ClientServiceImpl implements ClientService {
         threadService.startHeartCheckBilibiliDanmuServerThread();
     }
 
-    @Override
-    public boolean closeConnService() {
-        boolean flag = false;
-        if (GlobalSettingCache.bilibiliWebSocketProxy != null) {
-            if (GlobalSettingCache.bilibiliWebSocketProxy.isOpen()) {
-                synchronized (GlobalSettingCache.bilibiliWebSocketProxy) {
-                    GlobalSettingCache.bilibiliWebSocketProxy.close();
-                    try {
-                        GlobalSettingCache.bilibiliWebSocketProxy.closeBlocking();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    GlobalSettingCache.bilibiliWebSocketProxy.closeConnection(1000, "手动关闭");
-                    GlobalSettingCache.bilibiliWebSocketProxy = null;
-                }
-                threadService.closeAll();
-                GlobalSettingCache.init_connect();
-                if (null == GlobalSettingCache.bilibiliWebSocketProxy || !GlobalSettingCache.bilibiliWebSocketProxy.isOpen()) {
-                    flag = true;
-                }
-            } else {
-                flag = true;
-            }
-        }
-        return flag;
-    }
-
-
     /**
      * 根据当前的配置
      * 运行处理弹幕的线程
@@ -230,18 +206,43 @@ public class ClientServiceImpl implements ClientService {
         }
     }
 
+    /**
+     * 根据当前的配置
+     * 运行AI线程
+     */
+    @Override
+    public void startAIThread() {
+
+        synchronized (GlobalSettingCache.ALL_SETTING_CONF) {
+
+            if (ObjectUtils.isEmpty(GlobalSettingCache.ROOM_ID) || GlobalSettingCache.ROOM_ID <= 0) {
+                // 这些配置都是跟直播间相关的，所以必须设置直播间
+                return;
+            }
+
+            if (ObjectUtils.isEmpty(GlobalSettingCache.bilibiliWebSocketProxy) || !GlobalSettingCache.bilibiliWebSocketProxy.isOpen()) {
+                return;
+            }
+
+            // 到了这里说明 已经连接到了 一个直播间
+            // 所以直接启动弹幕接收
+            threadService.startAIThread();
+        }
+    }
+
 
     // 关闭用户相关线程
     @Override
     public void closeConnection(){
-        // 关闭日志线程
         threadService.closeLogThread();
-        // 关闭心跳检测线程
         threadService.closeHeartByteThread();
-        // 关闭解析弹幕线程
         threadService.closeParseMessageThread();
+        threadService.closeAIThread();
         GlobalSettingCache.logList = null;
         GlobalSettingCache.danmuList = null;
+        GlobalSettingCache.aiQuestionList = null;
+        GlobalSettingCache.aiAnswerList = null;
+        GlobalSettingCache.aiQuestionCount = null;
         GlobalSettingCache.bilibiliWebSocketProxy.close();
         GlobalSettingCache.bilibiliWebSocketProxy = null;
         log.info("关闭 websocket 及其 相关线程成功");

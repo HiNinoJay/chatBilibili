@@ -70,6 +70,7 @@ function openWebsocketConnection(ip, sliceh) {
 
         // 初始化时滚动到底部
         scrollToBottom();
+
     };
 
     // 关闭事件

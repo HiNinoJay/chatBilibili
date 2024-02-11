@@ -70,6 +70,11 @@ $(document).on('click', '.oneStepAllSettingUsingButton', function (e) {
         }
     });
 
+    if(aiCharacterName == null || aiCharacterName == '') {
+        alert("AI性格未选择。");
+        return;
+    }
+
     // 获取 aiReplyStatus 复选框的状态
     var aiReplyStatus = $(".aiReplyForm input[name='aiReplyStatus']").prop('checked');
 
@@ -142,6 +147,11 @@ $(document).on('click', '.danmuSettingUsingButton', function (e) {
 
 
 $(document).on('click', '.chatGPTSettingUsingButton', function (e) {
+
+    if(aiCharacterName == null || aiCharacterName == '') {
+        alert("AI性格未选择。");
+        return;
+    }
 
     // 获取 aiReplyStatus 复选框的状态
     var aiReplyStatus = $(".aiReplyForm input[name='aiReplyStatus']").prop('checked');
@@ -232,6 +242,7 @@ $(document).on('click', '.addNewAiCharacterButton', function (e) {
         data: JSON.stringify({ name : name, prompt: prompt}),
         success: function(response) {
             if(response.code == "200") {
+                window.location.href = "/";
                 alert("保存成功。")
             } else if(response.code == "50000"){
                 alert("未连接到chatGPT服务器。")

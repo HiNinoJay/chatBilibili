@@ -10,6 +10,7 @@ import top.nino.api.model.vo.dto.ChatResDto;
 public interface ChatGPTService {
 
     Boolean checkChatGPTStatus();
+    ChatResDto chatCompletions(String usingCharacterName, String characterDescription, String prompt) throws Exception;
     ChatResDto chatCompletions(String characterDescription, String prompt) throws Exception;
     ChatResDto testHelloChatGPTByDescription(String prompt);
 }

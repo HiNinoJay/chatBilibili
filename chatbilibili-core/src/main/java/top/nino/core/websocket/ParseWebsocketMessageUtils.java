@@ -1,11 +1,10 @@
-package top.nino.chatbilibili.client.utils;
+package top.nino.core.websocket;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import struct.JavaStruct;
 import struct.StructException;
 import top.nino.api.model.danmu.DanmuByteDataHandle;
-import top.nino.chatbilibili.GlobalSettingCache;
 import top.nino.core.data.ByteUtils;
 
 
@@ -24,11 +23,11 @@ public class ParseWebsocketMessageUtils {
 	 * 
 	 * @param message
 	 */
-	public static void parseMessage(ByteBuffer message) throws Exception{
+	public static String parseMessage(ByteBuffer message) throws Exception{
 
 		byte[] messageBytes = ByteUtils.decodeValue(message);
 		if(ObjectUtils.isEmpty(messageBytes) || messageBytes.length == 0) {
-			return;
+			return "";
 		}
 
 		DanmuByteDataHandle danmuByteDataHandle = unBEhandle(messageBytes);
@@ -44,23 +43,8 @@ public class ParseWebsocketMessageUtils {
 
 		// 弹幕信息
 		if (data_ver == 0) {
-			try {
-				String resultStr = new String(dataBodyBytes, "utf-8");
-
-				// 放入待处理弹幕集合
-				synchronized (GlobalSettingCache.danmuList) {
-					GlobalSettingCache.danmuList.add(resultStr);
-				}
-
-				if (ObjectUtils.isNotEmpty(GlobalSettingCache.parseDanmuMessageThread) && !GlobalSettingCache.parseDanmuMessageThread.closeFlag) {
-					synchronized (GlobalSettingCache.parseDanmuMessageThread) {
-						GlobalSettingCache.parseDanmuMessageThread.notify();
-					}
-				}
-
-			} catch (Exception e) {
-				log.info("放入待处理弹幕集合，并通知线程处理，过程异常",e );
-			}
+			String resultStr = new String(dataBodyBytes, "utf-8");
+			return resultStr;
 		}
 
 		if (data_ver == 1) {
@@ -68,7 +52,7 @@ public class ParseWebsocketMessageUtils {
 			// 房间人气
 			if (data_type == 3) {
 				try {
-					GlobalSettingCache.ROOM_POPULARITY = ByteUtils.byteslong(dataBodyBytes);
+//					GlobalSettingCache.ROOM_POPULARITY = ByteUtils.byteslong(dataBodyBytes);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -89,7 +73,7 @@ public class ParseWebsocketMessageUtils {
 		if (data_ver == 2) {
 			// 拆子包
 			if (data_type == 5) {
-				ParseWebsocketMessageUtils.parseUnZipMessage(ByteUtils.BytesTozlibInflate(dataBodyBytes));
+				return ParseWebsocketMessageUtils.parseUnZipMessage(ByteUtils.BytesTozlibInflate(dataBodyBytes));
 			}
 
 		}
@@ -98,16 +82,17 @@ public class ParseWebsocketMessageUtils {
 		if(data_ver == 3){
 			// 拆子包
 			if(data_type==5){
-				ParseWebsocketMessageUtils.parseUnZipMessage(ByteUtils.BytesToBrotliInflate(dataBodyBytes));
+				return ParseWebsocketMessageUtils.parseUnZipMessage(ByteUtils.BytesToBrotliInflate(dataBodyBytes));
 			}
 		}
+		return "";
 	}
 
 	/**
 	 * 处理解压后子数据包
 	 * @param bytes
 	 */
-	public static void parseUnZipMessage(byte[] bytes) throws Exception {
+	public static String parseUnZipMessage(byte[] bytes) throws Exception {
 		int offset = 0;
 		int maxLen = bytes.length;
 
@@ -125,22 +110,8 @@ public class ParseWebsocketMessageUtils {
 			byte[] subBodyBytes = ByteUtils.subBytes(subBytes, head_len, data_len - head_len);
 
 			if (data_ver == 0) {
-				try {
-
-					String resultStr = new String(subBodyBytes, "utf-8");
-
-					synchronized (GlobalSettingCache.danmuList) {
-						GlobalSettingCache.danmuList.add(resultStr);
-					}
-
-					if (ObjectUtils.isNotEmpty(GlobalSettingCache.parseDanmuMessageThread) && !GlobalSettingCache.parseDanmuMessageThread.closeFlag) {
-						synchronized (GlobalSettingCache.parseDanmuMessageThread) {
-							GlobalSettingCache.parseDanmuMessageThread.notify();
-						}
-					}
-				} catch (Exception e) {
-					log.info("放入待处理弹幕集合，并通知线程处理，过程异常",e );
-				}
+				String resultStr = new String(subBodyBytes, "utf-8");
+				return resultStr;
 			}
 
 			if (data_ver == 1) {
@@ -148,7 +119,7 @@ public class ParseWebsocketMessageUtils {
 				// 房间人气
 				if (data_type == 3) {
 					try {
-						GlobalSettingCache.ROOM_POPULARITY = ByteUtils.byteslong(subBodyBytes);
+//						GlobalSettingCache.ROOM_POPULARITY = ByteUtils.byteslong(subBodyBytes);
 					} catch (Exception e) {
 						log.info("房间人气解析异常", e);
 					}
@@ -162,6 +133,7 @@ public class ParseWebsocketMessageUtils {
 
 			offset += data_len;
 		}
+		return "";
 	}
 
 	/**

@@ -51,11 +51,11 @@ public class ParseDanmuMessageThread extends Thread {
 
             JSONObject messageJsonObject = JSONObject.parseObject(message);
 
-
-
             String haveKnownCmd = DanmuUtils.parseHaveKnownCmd(messageJsonObject.getString("cmd"));
             if (StringUtils.isBlank(haveKnownCmd)) {
-                GlobalSettingCache.danmuList.remove(0);
+                synchronized (GlobalSettingCache.danmuList) {
+                    GlobalSettingCache.danmuList.remove(0);
+                }
                 continue;
             }
             // log.info("收到一条可解析的消息：{}", messageJsonObject.toString());
@@ -298,6 +298,7 @@ public class ParseDanmuMessageThread extends Thread {
 
             if(StringUtils.isNotBlank(parseResultString) && StringUtils.isNotBlank(cmdResultString) && ObjectUtils.isNotEmpty(objectResult)) {
                 logAndSendToLocalWebSocket(parseResultString, haveKnownCmd, objectResult);
+                putAIQuetion(haveKnownCmd, parseResultString);
             }
 
             // 解析完成移除
@@ -307,6 +308,40 @@ public class ParseDanmuMessageThread extends Thread {
             // log.info("消息解析成功:{}", messageJsonObject);
         }
 
+    }
+
+    private void putAIQuetion(String haveKnownCmd, String parseResultString) {
+
+        if(!"DANMU_MSG".equals(haveKnownCmd)){
+            return;
+        }
+
+
+        // 先放AI是不是要回答
+        if(!GlobalSettingCache.ALL_SETTING_CONF.getAiReplyStatus()
+                || GlobalSettingCache.ALL_SETTING_CONF.getAiReplyNum() <= 0
+                || StringUtils.isBlank(GlobalSettingCache.ALL_SETTING_CONF.getUsingAiCharacterName())) {
+            return;
+        }
+
+
+        int num = GlobalSettingCache.aiQuestionCount.incrementAndGet();
+        if(num < GlobalSettingCache.ALL_SETTING_CONF.getAiReplyNum()) {
+            log.info("AI回答已探测到可弹幕，但还未到达回答频率：{}/{}", num, GlobalSettingCache.ALL_SETTING_CONF.getAiReplyNum());
+            return;
+        }
+
+        synchronized (GlobalSettingCache.aiQuestionList) {
+            GlobalSettingCache.aiQuestionList.add(parseResultString);
+        }
+
+        if (ObjectUtils.isNotEmpty(GlobalSettingCache.aiThread) && !GlobalSettingCache.aiThread.closeFlag) {
+            synchronized (GlobalSettingCache.aiThread) {
+                GlobalSettingCache.aiThread.notify();
+            }
+        }
+        GlobalSettingCache.aiQuestionCount.set(0);
+        log.info("已探测到AI可回答的弹幕：{}", parseResultString);
     }
 
 

@@ -40,6 +40,20 @@ public class ThreadServiceImpl implements ThreadService {
 		GlobalSettingCache.parseDanmuMessageThread.start();
 	}
 
+	/**
+	 * 开启AI线程
+	 *
+	 */
+	@Override
+	public void startAIThread() {
+		if (ObjectUtils.isNotEmpty(GlobalSettingCache.aiThread)  && !"TERMINATED".equals(GlobalSettingCache.aiThread.getState().toString())) {
+			return;
+		}
+		GlobalSettingCache.aiThread = new AIThread();
+		GlobalSettingCache.aiThread.closeFlag = false;
+		GlobalSettingCache.aiThread.start();
+	}
+
 	@Override
 	public void startHeartCheckBilibiliDanmuServerThread() {
 		if (ObjectUtils.isNotEmpty(GlobalSettingCache.heartCheckBilibiliDanmuServerThread)) {
@@ -70,6 +84,15 @@ public class ThreadServiceImpl implements ThreadService {
 			GlobalSettingCache.parseDanmuMessageThread.closeFlag = true;
 			GlobalSettingCache.parseDanmuMessageThread.interrupt();
 			GlobalSettingCache.parseDanmuMessageThread = null;
+		}
+	}
+
+	@Override
+	public void closeAIThread() {
+		if (GlobalSettingCache.aiThread != null) {
+			GlobalSettingCache.aiThread.closeFlag = true;
+			GlobalSettingCache.aiThread.interrupt();
+			GlobalSettingCache.aiThread = null;
 		}
 	}
 

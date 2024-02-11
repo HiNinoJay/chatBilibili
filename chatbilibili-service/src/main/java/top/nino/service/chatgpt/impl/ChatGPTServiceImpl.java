@@ -9,6 +9,7 @@ import cn.codingguide.chatgpt4j.key.RandomKeySelectorStrategy;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.logging.HttpLoggingInterceptor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,8 @@ import top.nino.api.model.vo.dto.ChatResDto;
 import top.nino.service.chatgpt.ChatGPTService;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -66,7 +69,7 @@ public class ChatGPTServiceImpl implements ChatGPTService {
                     .build();
 
             try {
-                chatCompletions(defaultCharacter, "你好");
+                chatCompletions("猫", defaultCharacter, "你好");
             } catch (Exception e) {
                 log.error("chatGPT服务器连接异常，有可能是apikey已经失效", e);
                 return;
@@ -79,7 +82,7 @@ public class ChatGPTServiceImpl implements ChatGPTService {
     @Override
     public Boolean checkChatGPTStatus() {
         try {
-            chatCompletions(defaultCharacter, "你好");
+            chatCompletions("猫", defaultCharacter, "你好");
         } catch (Exception e) {
             return false;
         }
@@ -87,9 +90,21 @@ public class ChatGPTServiceImpl implements ChatGPTService {
     }
 
     @Override
+    public ChatResDto chatCompletions(String usingCharacterName, String characterDescription, String prompt) throws Exception{
+
+        ChatResDto chatResDto = chatCompletions(characterDescription, prompt);
+        if(ObjectUtils.isNotEmpty(chatResDto)) {
+            chatResDto.setUserName(usingCharacterName);
+        }
+        return chatResDto;
+    }
+
+
+    @Override
     public ChatResDto chatCompletions(String characterDescription, String prompt) throws Exception{
 
-        ChatResDto chatResVo = new ChatResDto();
+        ChatResDto chatResDto = new ChatResDto();
+        chatResDto.setCharacterDescription(characterDescription);
 
         ChatCompletionRequest question = ChatCompletionRequest.newBuilder()
                 .addMessage(Message.newBuilder().role(Role.SYSTEM).content(characterDescription).build())
@@ -113,7 +128,7 @@ public class ChatGPTServiceImpl implements ChatGPTService {
 
         for(int i = 0; i < messages.size(); i++) {
             if(i == 0) {
-                chatResVo.setCharacterDescription(messages.get(i).getContent());
+                chatResDto.setCharacterDescription(messages.get(i).getContent());
             } else {
                 chatMessage.add(messages.get(i).getContent());
             }
@@ -121,16 +136,20 @@ public class ChatGPTServiceImpl implements ChatGPTService {
         chatMessage.add(chatCompletion.getChoices()[0].getMessage().getContent());
 
         if(chatMessage.size() % 2 != 0) {
-            chatResVo.setAnswers(Lists.newArrayList("对话不完整。"));
+            chatResDto.setAnswers(Lists.newArrayList("对话不完整。"));
         } else {
             List<String> returnChatMessage = new ArrayList<>();
             for(int i = 0; i < chatMessage.size(); i+=2) {
                 returnChatMessage.add(chatMessage.get(i+1));
             }
-            chatResVo.setAnswers(returnChatMessage);
+            chatResDto.setAnswers(returnChatMessage);
         }
-        chatResVo.setPrompt(prompt);
-        return chatResVo;
+        chatResDto.setPrompt(prompt);
+        // 格式化输出
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = LocalDateTime.now().format(formatter);
+        chatResDto.setAnswerTime(formattedDateTime);
+        return chatResDto;
     }
 
 

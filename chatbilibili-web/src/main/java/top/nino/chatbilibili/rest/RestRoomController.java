@@ -73,6 +73,9 @@ public class RestRoomController {
     @GetMapping(value = "/startReceiveDanmu")
     public Response<?> startReceiveDanmu(HttpServletRequest req) {
         clientService.startReceiveDanmuThread();
+        if(GlobalSettingCache.ALL_SETTING_CONF.getAiReplyStatus() && GlobalSettingCache.ALL_SETTING_CONF.getAiReplyNum() > 0) {
+            clientService.startAIThread();
+        }
         return Response.success(true, req);
     }
 }

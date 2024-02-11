@@ -1,14 +1,17 @@
 package top.nino.chatbilibili.client;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 import top.nino.api.model.room.RoomAnchorInfo;
 import top.nino.chatbilibili.GlobalSettingCache;
 import top.nino.chatbilibili.thread.ReConnThread;
-import top.nino.chatbilibili.client.utils.ParseWebsocketMessageUtils;
+import top.nino.core.websocket.DanmuUtils;
+import top.nino.core.websocket.ParseWebsocketMessageUtils;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -37,7 +40,19 @@ public class BilibiliWebsocket extends WebSocketClient {
 	public void onMessage(ByteBuffer message) {
 		if(ObjectUtils.isNotEmpty(GlobalSettingCache.parseDanmuMessageThread) && ! GlobalSettingCache.parseDanmuMessageThread.closeFlag) {
 			try {
-				ParseWebsocketMessageUtils.parseMessage(message);
+				String resultStr = ParseWebsocketMessageUtils.parseMessage(message);
+				if(StringUtils.isNotBlank(resultStr)) {
+					// 放入待处理弹幕集合
+					synchronized (GlobalSettingCache.danmuList) {
+						GlobalSettingCache.danmuList.add(resultStr);
+					}
+
+					if (ObjectUtils.isNotEmpty(GlobalSettingCache.parseDanmuMessageThread) && !GlobalSettingCache.parseDanmuMessageThread.closeFlag) {
+						synchronized (GlobalSettingCache.parseDanmuMessageThread) {
+							GlobalSettingCache.parseDanmuMessageThread.notify();
+						}
+					}
+				}
 			} catch (Exception e) {
 				log.info("解析websocket包错误", e);
 			}
